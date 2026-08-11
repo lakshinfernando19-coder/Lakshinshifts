@@ -348,7 +348,7 @@
           </select>
         </div>
       </div>
-      <div class="summary" style="margin-top: 18px; grid-template-columns: repeat(4, minmax(0, 1fr));">
+      <div class="summary" style="margin-top: 18px; grid-template-columns: repeat(3, minmax(0, 1fr));">
         <div class="summary-item">
           <strong id="monthCountShifts">0</strong>
           Shifts this month
@@ -360,10 +360,6 @@
         <div class="summary-item">
           <strong id="monthCountNight">0</strong>
           Night shifts
-        </div>
-        <div class="summary-item">
-          <strong id="monthCountBoth">0</strong>
-          Both shifts
         </div>
       </div>
       <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));">
@@ -396,10 +392,6 @@
         <div class="summary-item">
           <strong id="countNight">0</strong>
           Night shifts
-        </div>
-        <div class="summary-item">
-          <strong id="countBoth">0</strong>
-          Both shifts
         </div>
       </div>
       <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(4, minmax(0, 1fr));">
@@ -451,13 +443,11 @@
     const countShifts = document.getElementById('countShifts');
     const countMorning = document.getElementById('countMorning');
     const countNight = document.getElementById('countNight');
-    const countBoth = document.getElementById('countBoth');
     const totalSalary = document.getElementById('totalSalary');
     const monthFilter = document.getElementById('monthFilter');
     const monthCountShifts = document.getElementById('monthCountShifts');
     const monthCountMorning = document.getElementById('monthCountMorning');
     const monthCountNight = document.getElementById('monthCountNight');
-    const monthCountBoth = document.getElementById('monthCountBoth');
     const monthSalary = document.getElementById('monthSalary');
     const monthTarget = document.getElementById('monthTarget');
     const monthDifference = document.getElementById('monthDifference');
@@ -522,20 +512,17 @@
 
       let morningCount = 0;
       let nightCount = 0;
-      let bothCount = 0;
       let total = 0;
 
       filtered.forEach(record => {
         if (record.shift === 'morning') morningCount++;
         if (record.shift === 'night') nightCount++;
-        if (record.shift === 'both') bothCount++;
         total += record.salary;
       });
 
       monthCountShifts.textContent = filtered.length;
       monthCountMorning.textContent = morningCount;
       monthCountNight.textContent = nightCount;
-      monthCountBoth.textContent = bothCount;
       monthSalary.textContent = formatCurrency(total);
       monthTarget.textContent = formatCurrency(MONTHLY_TARGET);
       const diff = Math.max(0, MONTHLY_TARGET - total);
@@ -570,7 +557,6 @@
       shiftTableBody.innerHTML = '';
       let morningCount = 0;
       let nightCount = 0;
-      let bothCount = 0;
       let total = 0;
 
       records.sort((a, b) => a.date.localeCompare(b.date));
@@ -588,7 +574,6 @@
 
         if (record.shift === 'morning') morningCount++;
         if (record.shift === 'night') nightCount++;
-        if (record.shift === 'both') bothCount++;
         total += record.salary;
       });
 
@@ -597,7 +582,6 @@
       countShifts.textContent = records.length;
       countMorning.textContent = morningCount;
       countNight.textContent = nightCount;
-      countBoth.textContent = bothCount;
       totalSalary.textContent = formatCurrency(total);
     }
 
@@ -611,11 +595,6 @@
         shiftLabel = 'Morning';
         startTime = '10:00';
         endTime = '15:30';
-      } else if (shift === 'both') {
-        shiftLabel = 'Both';
-        startTime = '10:00';
-        endTime = '23:30';
-        salary = SHIFT_AMOUNT * 2;
       }
 
       return {
@@ -638,22 +617,36 @@
       }
 
       const records = loadRecords();
-      records.push(createRecord(dateValue, shiftValue));
+      if (shiftValue === 'both') {
+        const morningRec = createRecord(dateValue, 'morning');
+        const nightRec = createRecord(dateValue, 'night');
+        records.push(morningRec, nightRec);
+        saveRecords(records);
+        // Save settings
+        saveSettings({ sheetsUrl: sheetsUrlInput.value || '', email: notifyEmailInput.value || '' });
+        renderRecords();
+        shiftDate.value = '';
+        shiftType.value = 'morning';
+        showToast('Morning + Night added');
+        if (sheetsUrlInput.value) {
+          sendToSheets(morningRec).then(res => { if (!res.ok) showToast('Sheets send failed'); });
+          sendToSheets(nightRec).then(res => { if (!res.ok) showToast('Sheets send failed'); });
+        }
+        return;
+      }
+
+      // single shift
+      const rec = createRecord(dateValue, shiftValue);
+      records.push(rec);
       saveRecords(records);
-      renderRecords();
-      // Save user settings (sheets url + email)
+      // Save settings
       saveSettings({ sheetsUrl: sheetsUrlInput.value || '', email: notifyEmailInput.value || '' });
+      renderRecords();
       shiftDate.value = '';
       shiftType.value = 'morning';
       showToast('Shift added');
-
-      // send to sheets if configured
-      const record = records[records.length - 1];
       if (sheetsUrlInput.value) {
-        sendToSheets(record).then(res => {
-          if (res.ok) showToast('Sent to Sheets');
-          else showToast('Sheets send failed');
-        });
+        sendToSheets(rec).then(res => { if (!res.ok) showToast('Sheets send failed'); });
       }
     }
 
