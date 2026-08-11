@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#1b0b2d" />
+  <meta name="theme-color" content="#210b35" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -13,33 +13,33 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #1a0211;
-      --surface: rgba(255, 255, 255, 0.05);
-      --surface-strong: rgba(255, 255, 255, 0.09);
-      --border: rgba(255, 255, 255, 0.10);
-      --text: #fff6ff;
-      --muted: #f3dff0;
-      /* dark pink centered palette */
-      --accent-pink-dark: #ff1f7a;
-      --accent-pink: #ff4b9f;
-      --accent-purple: #9b3bff;
-      --accent-soft: #ffe6f6;
-      --purple-gradient: linear-gradient(135deg, var(--accent-pink-dark) 0%, var(--accent-pink) 45%, var(--accent-purple) 100%);
-      --shadow: 0 28px 80px rgba(155, 35, 120, 0.26);
+      --bg: #0d071d;
+      --surface: rgba(20, 8, 45, 0.88);
+      --surface-strong: rgba(27, 11, 67, 0.94);
+      --border: rgba(173, 100, 225, 0.20);
+      --text: #f6efff;
+      --muted: #d7c4ff;
+      --accent-purple-dark: #5f1b94;
+      --accent-purple: #8c42d8;
+      --accent-light: #c38fff;
+      --accent-soft: rgba(130, 75, 205, 0.16);
+      --primary-gradient: linear-gradient(135deg, var(--accent-purple-dark) 0%, var(--accent-purple) 55%, var(--accent-light) 100%);
+      --shadow: 0 26px 60px rgba(68, 26, 105, 0.28);
     }
 
     * {
       box-sizing: border-box;
     }
 
+
     body {
       margin: 0;
       min-height: 100vh;
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       color: var(--text);
-      background: radial-gradient(circle at top left, rgba(155, 92, 255, 0.28), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(115, 86, 255, 0.22), transparent 30%),
-        linear-gradient(180deg, #11071c 0%, #10071b 55%, #140a29 100%);
+      background: radial-gradient(circle at top left, rgba(176, 103, 241, 0.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(102, 30, 145, 0.24), transparent 32%),
+        linear-gradient(180deg, #0d071d 0%, #180a35 45%, #240d4d 100%);
       overflow-x: hidden;
     }
 
@@ -47,11 +47,8 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80');
-      background-size: cover;
-      background-position: center;
-      opacity: 0.14;
-      filter: blur(20px) brightness(0.7);
+      background: radial-gradient(circle at 20% 20%, rgba(189, 124, 255, 0.16), transparent 22%),
+        radial-gradient(circle at 80% 80%, rgba(130, 80, 210, 0.18), transparent 26%);
       pointer-events: none;
       z-index: -1;
     }
@@ -68,7 +65,7 @@
       border-radius: 30px;
       backdrop-filter: blur(24px);
       box-shadow: var(--shadow);
-      padding: 28px;
+      padding: 26px;
       margin-bottom: 24px;
     }
 
@@ -134,8 +131,8 @@
 
     input[type='date']:focus,
     select:focus {
-      border-color: rgba(155, 92, 255, 0.9);
-      box-shadow: 0 0 0 6px rgba(155, 92, 255, 0.14);
+      border-color: rgba(140, 66, 216, 0.92);
+      box-shadow: 0 0 0 6px rgba(140, 66, 216, 0.16);
     }
 
     button {
@@ -155,23 +152,40 @@
       opacity: 0.96;
     }
 
+
     button.primary {
-      background: var(--purple-gradient);
-      box-shadow: 0 18px 40px rgba(138, 75, 255, 0.22);
+      background: var(--primary-gradient);
+      box-shadow: 0 18px 40px rgba(118, 51, 173, 0.28);
       color: #fff;
     }
 
     button.secondary {
       background: rgba(255, 255, 255, 0.08);
       color: var(--text);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(120, 184, 255, 0.18);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 18px;
+      border-radius: 22px;
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(90, 155, 255, 0.35);
+      border-radius: 99px;
     }
 
     table {
       width: 100%;
+      min-width: 620px;
       border-collapse: separate;
       border-spacing: 0 10px;
-      margin-top: 24px;
+      margin-top: 0;
       overflow: hidden;
     }
 
@@ -298,7 +312,7 @@
     .modal h3 { margin: 0 0 10px 0; }
     .modal .modal-actions { display: flex; gap: 12px; margin-top: 14px; }
     .modal .btn-cancel { background: rgba(255,255,255,0.06); color: var(--text); padding: 12px 14px; border-radius: 10px; border: none; }
-    .modal .btn-confirm { background: var(--purple-gradient); color: #fff; padding: 12px 14px; border-radius: 10px; border: none; }
+    .modal .btn-confirm { background: var(--primary-gradient); color: #fff; padding: 12px 14px; border-radius: 10px; border: none; }
     .modal.hidden { display:none; }
   </style>
 </head>
@@ -321,20 +335,40 @@
           </select>
         </div>
       </div>
-      <div class="row single" style="margin-top:12px;">
-        <div>
-          <label for="sheetsUrl">Google Sheets endpoint (optional)</label>
-          <input id="sheetsUrl" placeholder="Paste your Apps Script POST URL (optional)" />
-        </div>
-        <div>
-          <label for="notifyEmail">Email for updates</label>
-          <input id="notifyEmail" type="email" placeholder="you@example.com" />
-        </div>
-      </div>
       <div class="row" style="margin-top: 18px;">
         <button class="primary" id="addShift">Add Shift</button>
         <button class="secondary" id="clearAll">Clear All</button>
         <button class="secondary" id="downloadCsv">Download Excel CSV</button>
+        <button class="secondary" id="emailSummary">Email Summary</button>
+        <button class="secondary" id="exportPdf">Export as PDF</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Advanced options</h2>
+      <div class="row single" style="margin-top: 12px;">
+        <div>
+          <label for="shiftAmount">Base shift salary (€)</label>
+          <input type="number" id="shiftAmount" min="0" step="0.01" />
+        </div>
+        <div>
+          <label for="monthlyTargetInput">Monthly salary target (€)</label>
+          <input type="number" id="monthlyTargetInput" min="0" step="1" />
+        </div>
+      </div>
+      <div class="row" style="margin-top: 18px;">
+        <div>
+          <label for="summaryEmail">Summary email</label>
+          <input type="email" id="summaryEmail" placeholder="you@example.com" />
+        </div>
+        <div>
+          <label for="autoSendToggle">Auto-send month-end summary</label>
+          <input type="checkbox" id="autoSendToggle" />
+        </div>
+      </div>
+      <div class="row" style="margin-top: 18px;">
+        <button class="secondary" id="saveOptions">Save options</button>
+        <button class="secondary" id="resetOptions">Reset options</button>
       </div>
     </div>
 
@@ -408,18 +442,20 @@
           Remaining
         </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Shift</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Salary</th>
-          </tr>
-        </thead>
-        <tbody id="archiveTableBody"></tbody>
-      </table>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Shift</th>
+              <th>Start</th>
+              <th>End</th>
+              <th>Salary</th>
+            </tr>
+          </thead>
+          <tbody id="archiveTableBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <div class="card">
@@ -444,18 +480,20 @@
           Total salary
         </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Shift</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Salary</th>
-          </tr>
-        </thead>
-        <tbody id="shiftTableBody"></tbody>
-      </table>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Shift</th>
+              <th>Start</th>
+              <th>End</th>
+              <th>Salary</th>
+            </tr>
+          </thead>
+          <tbody id="shiftTableBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <div class="footer">Saved locally in your browser. Use the download button to export to Excel-compatible CSV.</div>
@@ -502,16 +540,31 @@
     const archiveTarget = document.getElementById('archiveTarget');
     const archiveDifference = document.getElementById('archiveDifference');
     const archiveTableBody = document.getElementById('archiveTableBody');
+    const emailSummary = document.getElementById('emailSummary');
+    const exportPdf = document.getElementById('exportPdf');
+    const shiftAmountInput = document.getElementById('shiftAmount');
+    const monthlyTargetInput = document.getElementById('monthlyTargetInput');
+    const autoSendToggle = document.getElementById('autoSendToggle');
+    const summaryEmailInput = document.getElementById('summaryEmail');
+    const saveOptions = document.getElementById('saveOptions');
+    const resetOptions = document.getElementById('resetOptions');
+    const SETTINGS_KEY = 'myShiftTrackerSettings';
+    const DEFAULT_EMAIL = 'lakshinfernando19@gmail.com';
     const SHIFT_AMOUNT = 33.33;
     const MONTHLY_TARGET = 1200;
-    const SETTINGS_KEY = 'myShiftTrackerSettings';
-
-    const sheetsUrlInput = document.getElementById('sheetsUrl');
-    const notifyEmailInput = document.getElementById('notifyEmail');
 
     function loadRecords() {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
+      const records = raw ? JSON.parse(raw) : [];
+      return normalizeRecords(Array.isArray(records) ? records : []);
+    }
+
+    function saveRecords(records) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function saveSettings(settings) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     }
 
     function loadSettings() {
@@ -519,12 +572,61 @@
       return raw ? JSON.parse(raw) : {};
     }
 
-    function saveSettings(s) {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+    function generateId() {
+      return window.crypto?.randomUUID ? crypto.randomUUID() : `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     }
 
-    function saveRecords(records) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    function normalizeRecords(records) {
+      let changed = false;
+      records.forEach(record => {
+        if (!record.id) {
+          record.id = generateId();
+          changed = true;
+        }
+      });
+      if (changed) saveRecords(records);
+      return records;
+    }
+
+    function getSettings() {
+      const saved = loadSettings();
+      return {
+        shiftAmount: Number(saved.shiftAmount ?? SHIFT_AMOUNT),
+        monthlyTarget: Number(saved.monthlyTarget ?? MONTHLY_TARGET),
+        autoSend: saved.autoSend === true,
+        email: saved.email || DEFAULT_EMAIL,
+      };
+    }
+
+    function applySettings() {
+      const settings = getSettings();
+      shiftAmountInput.value = settings.shiftAmount;
+      monthlyTargetInput.value = settings.monthlyTarget;
+      autoSendToggle.checked = settings.autoSend;
+      summaryEmailInput.value = settings.email;
+    }
+
+    function saveOptionsHandler() {
+      saveSettings({
+        shiftAmount: Number(shiftAmountInput.value) || SHIFT_AMOUNT,
+        monthlyTarget: Number(monthlyTargetInput.value) || MONTHLY_TARGET,
+        autoSend: autoSendToggle.checked,
+        email: summaryEmailInput.value || DEFAULT_EMAIL,
+      });
+      showToast('Advanced options saved');
+      renderRecords();
+    }
+
+    function resetOptionsHandler() {
+      saveSettings({
+        shiftAmount: SHIFT_AMOUNT,
+        monthlyTarget: MONTHLY_TARGET,
+        autoSend: false,
+        email: DEFAULT_EMAIL,
+      });
+      applySettings();
+      showToast('Advanced options reset');
+      renderRecords();
     }
 
     function formatCurrency(value) {
@@ -560,6 +662,7 @@
     }
 
     function renderMonthSummary(records) {
+      const settings = getSettings();
       const currentMonthKey = getCurrentMonthKey();
       const filtered = records.filter(record => getMonthKey(record.date) === currentMonthKey);
 
@@ -577,8 +680,8 @@
       monthCountMorning.textContent = morningCount;
       monthCountNight.textContent = nightCount;
       monthSalary.textContent = formatCurrency(total);
-      monthTarget.textContent = formatCurrency(MONTHLY_TARGET);
-      const diff = Math.max(0, MONTHLY_TARGET - total);
+      monthTarget.textContent = formatCurrency(settings.monthlyTarget);
+      const diff = Math.max(0, settings.monthlyTarget - total);
       monthDifference.textContent = formatCurrency(diff);
     }
 
@@ -617,12 +720,13 @@
         total += record.salary;
       });
 
+      const settings = getSettings();
       archiveCountShifts.textContent = filtered.length;
       archiveCountMorning.textContent = morningCount;
       archiveCountNight.textContent = nightCount;
       archiveSalary.textContent = formatCurrency(total);
-      archiveTarget.textContent = formatCurrency(MONTHLY_TARGET);
-      const diff = Math.max(0, MONTHLY_TARGET - total);
+      archiveTarget.textContent = formatCurrency(settings.monthlyTarget);
+      const diff = Math.max(0, settings.monthlyTarget - total);
       archiveDifference.textContent = formatCurrency(diff);
     }
 
@@ -634,18 +738,89 @@
       setTimeout(() => t.classList.add('hide'), 2200);
     }
 
-    async function sendToSheets(record) {
-      const url = (sheetsUrlInput && sheetsUrlInput.value) || '';
-      if (!url) return { ok: false, reason: 'no-url' };
+    function playClickTone() {
       try {
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(record),
-        });
-        return { ok: res.ok };
-      } catch (e) {
-        return { ok: false, reason: e.message };
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 520;
+        gainNode.gain.value = 0.08;
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.06);
+        oscillator.onended = () => audioCtx.close();
+      } catch (error) {
+        // audio not supported
+      }
+    }
+
+    function feedbackOnAdd() {
+      if (navigator.vibrate) navigator.vibrate(30);
+      playClickTone();
+    }
+
+    function updateRecord(recordId, updates) {
+      const records = loadRecords();
+      const index = records.findIndex(r => r.id === recordId);
+      if (index === -1) return;
+      records[index] = { ...records[index], ...updates };
+      saveRecords(records);
+      renderRecords();
+      showToast('Record updated');
+    }
+
+    function deleteRecord(recordId) {
+      const records = loadRecords();
+      const filtered = records.filter(r => r.id !== recordId);
+      saveRecords(filtered);
+      renderRecords();
+      showToast('Record deleted');
+    }
+
+    function promptEditRecord(recordId) {
+      const records = loadRecords();
+      const record = records.find(r => r.id === recordId);
+      if (!record) return;
+
+      const dateValue = prompt('Edit date (YYYY-MM-DD):', record.date);
+      if (dateValue === null) return;
+      const shiftValue = prompt('Edit shift (morning/night):', record.shift);
+      if (shiftValue === null) return;
+      if (!['morning', 'night'].includes(shiftValue)) {
+        showToast('Shift must be morning or night');
+        return;
+      }
+
+      const settings = getSettings();
+      const updated = {
+        date: dateValue,
+        shift: shiftValue,
+        shiftLabel: shiftValue === 'morning' ? 'Morning' : 'Night',
+        startTime: shiftValue === 'morning' ? '10:00' : '18:30',
+        endTime: shiftValue === 'morning' ? '15:30' : '23:30',
+        salary: settings.shiftAmount,
+      };
+
+      updateRecord(recordId, updated);
+    }
+
+    function handleShiftTableClick(event) {
+      const button = event.target.closest('button');
+      if (!button) return;
+      const row = button.closest('tr');
+      if (!row) return;
+      const recordId = row.dataset.recordId;
+      if (!recordId) return;
+
+      if (button.classList.contains('edit-record')) {
+        promptEditRecord(recordId);
+      }
+      if (button.classList.contains('delete-record')) {
+        if (!confirm('Delete this shift record?')) return;
+        deleteRecord(recordId);
       }
     }
 
@@ -663,12 +838,17 @@
 
       currentRecords.forEach(record => {
         const row = document.createElement('tr');
+        row.dataset.recordId = record.id;
         row.innerHTML = `
           <td>${record.date}</td>
           <td>${record.shiftLabel}</td>
           <td>${record.startTime}</td>
           <td>${record.endTime}</td>
           <td>${formatCurrency(record.salary)}</td>
+          <td>
+            <button class="secondary edit-record" type="button">Edit</button>
+            <button class="secondary delete-record" type="button">Delete</button>
+          </td>
         `;
         shiftTableBody.appendChild(row);
 
@@ -687,10 +867,12 @@
     }
 
     function createRecord(date, shift) {
+      const settings = getSettings();
       let shiftLabel = 'Night';
       let startTime = '18:30';
       let endTime = '23:30';
-      let salary = SHIFT_AMOUNT;
+      let salary = settings.shiftAmount;
+      const id = generateId();
 
       if (shift === 'morning') {
         shiftLabel = 'Morning';
@@ -699,6 +881,7 @@
       }
 
       return {
+        id,
         date,
         shift,
         shiftLabel,
@@ -723,32 +906,145 @@
         const nightRec = createRecord(dateValue, 'night');
         records.push(morningRec, nightRec);
         saveRecords(records);
-        // Save settings
-        saveSettings({ sheetsUrl: sheetsUrlInput.value || '', email: notifyEmailInput.value || '' });
         renderRecords();
         shiftDate.value = '';
         shiftType.value = 'morning';
         showToast('Morning + Night added');
-        if (sheetsUrlInput.value) {
-          sendToSheets(morningRec).then(res => { if (!res.ok) showToast('Sheets send failed'); });
-          sendToSheets(nightRec).then(res => { if (!res.ok) showToast('Sheets send failed'); });
-        }
-        return;
+        feedbackOnAdd();
+      } else {
+        const rec = createRecord(dateValue, shiftValue);
+        records.push(rec);
+        saveRecords(records);
+        renderRecords();
+        shiftDate.value = '';
+        shiftType.value = 'morning';
+        showToast('Shift added');
+        feedbackOnAdd();
       }
 
-      // single shift
-      const rec = createRecord(dateValue, shiftValue);
-      records.push(rec);
-      saveRecords(records);
-      // Save settings
-      saveSettings({ sheetsUrl: sheetsUrlInput.value || '', email: notifyEmailInput.value || '' });
-      renderRecords();
-      shiftDate.value = '';
-      shiftType.value = 'morning';
-      showToast('Shift added');
-      if (sheetsUrlInput.value) {
-        sendToSheets(rec).then(res => { if (!res.ok) showToast('Sheets send failed'); });
+      const settings = getSettings();
+      if (settings.autoSend && isLastDayOfMonth(new Date(dateValue))) {
+        sendEndOfMonthSummary();
       }
+    }
+
+    function getCurrentMonthSummary(records) {
+      const currentMonthKey = getCurrentMonthKey();
+      const filtered = records.filter(record => getMonthKey(record.date) === currentMonthKey);
+
+      const summary = {
+        monthLabel: formatMonthLabel(currentMonthKey),
+        totalShifts: filtered.length,
+        morningShifts: filtered.filter(record => record.shift === 'morning').length,
+        nightShifts: filtered.filter(record => record.shift === 'night').length,
+        totalSalary: filtered.reduce((sum, record) => sum + record.salary, 0),
+        target: MONTHLY_TARGET,
+      };
+      summary.remaining = Math.max(0, summary.target - summary.totalSalary);
+      summary.records = filtered;
+      return summary;
+    }
+
+    function buildSummaryEmailBody(summary) {
+      const lines = [
+        `Shift tracker summary for ${summary.monthLabel}`,
+        '',
+        `Total shifts: ${summary.totalShifts}`,
+        `Morning shifts: ${summary.morningShifts}`,
+        `Night shifts: ${summary.nightShifts}`,
+        `Total salary: ${formatCurrency(summary.totalSalary)}`,
+        `Salary target: ${formatCurrency(summary.target)}`,
+        `Remaining to target: ${formatCurrency(summary.remaining)}`,
+        '',
+        'Recorded shifts:',
+      ];
+
+      if (summary.records.length) {
+        summary.records.forEach(record => {
+          lines.push(`- ${record.date}: ${record.shiftLabel} (${record.startTime} - ${record.endTime}) ${formatCurrency(record.salary)}`);
+        });
+      } else {
+        lines.push('No recorded shifts for this month.');
+      }
+
+      return lines.join('\n');
+    }
+
+    function isLastDayOfMonth(date = new Date()) {
+      const d = new Date(date);
+      const nextDay = new Date(d);
+      nextDay.setDate(d.getDate() + 1);
+      return nextDay.getDate() === 1;
+    }
+
+    function sendEndOfMonthSummary() {
+      const settings = getSettings();
+      const records = loadRecords();
+      const summary = getCurrentMonthSummary(records);
+      const subject = encodeURIComponent(`Shift tracker summary for ${summary.monthLabel}`);
+      const body = encodeURIComponent(buildSummaryEmailBody(summary));
+      window.location.href = `mailto:${encodeURIComponent(settings.email)}?subject=${subject}&body=${body}`;
+      showToast('End-of-month summary draft opened');
+    }
+
+    function generatePdfContent(records, settings) {
+      const summary = getCurrentMonthSummary(records);
+      const lines = [
+        `Shift tracker summary for ${summary.monthLabel}`,
+        '',
+        `Total shifts: ${summary.totalShifts}`,
+        `Morning shifts: ${summary.morningShifts}`,
+        `Night shifts: ${summary.nightShifts}`,
+        `Total salary: ${formatCurrency(summary.totalSalary)}`,
+        `Salary target: ${formatCurrency(settings.monthlyTarget)}`,
+        `Remaining to target: ${formatCurrency(Math.max(0, settings.monthlyTarget - summary.totalSalary))}`,
+        '',
+        'Recorded shifts:',
+      ];
+      if (summary.records.length) {
+        summary.records.forEach(record => {
+          lines.push(`- ${record.date}: ${record.shiftLabel} (${record.startTime} - ${record.endTime}) ${formatCurrency(record.salary)}`);
+        });
+      } else {
+        lines.push('No recorded shifts for this month.');
+      }
+      return lines;
+    }
+
+    function exportRecordsPdf() {
+      const settings = getSettings();
+      const records = loadRecords();
+      const lines = generatePdfContent(records, settings);
+
+      if (window.jspdf?.jsPDF) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        let y = 14;
+        doc.setFontSize(12);
+        lines.forEach(line => {
+          if (y > 280) {
+            doc.addPage();
+            y = 14;
+          }
+          doc.text(line, 14, y);
+          y += 8;
+        });
+        doc.save('shift-summary.pdf');
+      } else {
+        window.print();
+      }
+    }
+
+    function emailSummaryReport() {
+      const settings = getSettings();
+      const records = loadRecords();
+      const summary = getCurrentMonthSummary(records);
+      const emailAddress = prompt('Enter your email address to receive the monthly summary:', settings.email) || settings.email;
+
+      const subject = encodeURIComponent(`Shift tracker summary for ${summary.monthLabel}`);
+      const body = encodeURIComponent(buildSummaryEmailBody(summary));
+      window.location.href = `mailto:${encodeURIComponent(emailAddress)}?subject=${subject}&body=${body}`;
+      showToast('Email draft opened');
     }
 
     function clearRecords() {
@@ -799,13 +1095,15 @@
     });
     clearAll.addEventListener('click', clearRecords);
     downloadCsv.addEventListener('click', downloadRecordsCsv);
+    exportPdf.addEventListener('click', exportRecordsPdf);
+    shiftTableBody.addEventListener('click', handleShiftTableClick);
+    emailSummary.addEventListener('click', emailSummaryReport);
+    saveOptions.addEventListener('click', saveOptionsHandler);
+    resetOptions.addEventListener('click', resetOptionsHandler);
     archiveMonthFilter.addEventListener('change', () => {
       renderArchiveMonth(loadRecords());
     });
-    // populate saved settings
-    const initialSettings = loadSettings();
-    if (initialSettings.sheetsUrl) sheetsUrlInput.value = initialSettings.sheetsUrl;
-    if (initialSettings.email) notifyEmailInput.value = initialSettings.email;
+    applySettings();
     renderRecords();
   </script>
 </body>
