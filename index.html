@@ -13,16 +13,18 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0b0517;
-      --surface: rgba(255, 255, 255, 0.08);
-      --surface-strong: rgba(255, 255, 255, 0.12);
-      --border: rgba(255, 255, 255, 0.14);
-      --text: #f6f2ff;
-      --muted: #c9bce4;
-      --accent: #9b5cff;
-      --accent-strong: #bf95ff;
-      --purple-gradient: linear-gradient(135deg, #6d3cff 0%, #a678ff 45%, #d6b1ff 100%);
-      --shadow: 0 32px 100px rgba(74, 43, 129, 0.25);
+      --bg: #120417;
+      --surface: rgba(255, 255, 255, 0.06);
+      --surface-strong: rgba(255, 255, 255, 0.10);
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #fff6ff;
+      --muted: #e6d9f7;
+      /* three-color palette: pink, purple, soft white */
+      --accent-pink: #ff5fa8;
+      --accent-purple: #8a4bff;
+      --accent-soft: #ffdff7;
+      --purple-gradient: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 60%, var(--accent-soft) 100%);
+      --shadow: 0 28px 80px rgba(138, 75, 255, 0.20);
     }
 
     * {
@@ -154,7 +156,7 @@
 
     button.primary {
       background: var(--purple-gradient);
-      box-shadow: 0 18px 40px rgba(107, 68, 255, 0.25);
+      box-shadow: 0 18px 40px rgba(138, 75, 255, 0.22);
       color: #fff;
     }
 
@@ -245,7 +247,31 @@
         flex-direction: column;
         align-items: flex-start;
       }
+      /* increase touch sizes on mobile */
+      input[type='date'],
+      select,
+      button { padding: 18px 20px; font-size: 1.06rem; }
     }
+
+    /* Toast / confirmation */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      padding: 14px 18px;
+      border-radius: 14px;
+      box-shadow: 0 12px 40px rgba(20,8,30,0.6);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      z-index: 60;
+      min-width: 220px;
+    }
+    .toast.hide { display: none; }
   </style>
 </head>
 <body>
@@ -265,6 +291,16 @@
             <option value="night">Night (18:30 - 23:30)</option>
             <option value="both">Both (10:00 - 23:30)</option>
           </select>
+        </div>
+      </div>
+      <div class="row single" style="margin-top:12px;">
+        <div>
+          <label for="sheetsUrl">Google Sheets endpoint (optional)</label>
+          <input id="sheetsUrl" placeholder="Paste your Apps Script POST URL (optional)" />
+        </div>
+        <div>
+          <label for="notifyEmail">Email for updates</label>
+          <input id="notifyEmail" type="email" placeholder="you@example.com" />
         </div>
       </div>
       <div class="row" style="margin-top: 18px;">
@@ -361,6 +397,10 @@
     <div class="footer">Saved locally in your browser. Use the download button to export to Excel-compatible CSV.</div>
   </div>
 
+  <div id="toast" class="toast hide" role="status" aria-live="polite"> 
+    <div id="toastText">Saved</div>
+  </div>
+
   <script>
     const STORAGE_KEY = 'myShiftTrackerRecords';
     const shiftDate = document.getElementById('shiftDate');
@@ -384,10 +424,23 @@
     const monthDifference = document.getElementById('monthDifference');
     const SHIFT_AMOUNT = 33.33;
     const MONTHLY_TARGET = 1200;
+    const SETTINGS_KEY = 'myShiftTrackerSettings';
+
+    const sheetsUrlInput = document.getElementById('sheetsUrl');
+    const notifyEmailInput = document.getElementById('notifyEmail');
 
     function loadRecords() {
       const raw = localStorage.getItem(STORAGE_KEY);
       return raw ? JSON.parse(raw) : [];
+    }
+
+    function loadSettings() {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }
+
+    function saveSettings(s) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
     }
 
     function saveRecords(records) {
@@ -448,6 +501,29 @@
       monthTarget.textContent = formatCurrency(MONTHLY_TARGET);
       const diff = Math.max(0, MONTHLY_TARGET - total);
       monthDifference.textContent = formatCurrency(diff);
+    }
+
+    function showToast(text = 'Saved') {
+      const t = document.getElementById('toast');
+      const txt = document.getElementById('toastText');
+      txt.textContent = text;
+      t.classList.remove('hide');
+      setTimeout(() => t.classList.add('hide'), 2200);
+    }
+
+    async function sendToSheets(record) {
+      const url = (sheetsUrlInput && sheetsUrlInput.value) || '';
+      if (!url) return { ok: false, reason: 'no-url' };
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record),
+        });
+        return { ok: res.ok };
+      } catch (e) {
+        return { ok: false, reason: e.message };
+      }
     }
 
     function renderRecords() {
@@ -518,7 +594,7 @@
       const shiftValue = shiftType.value;
 
       if (!dateValue) {
-        alert('Please choose a date before adding a shift.');
+        showToast('Please choose a date');
         return;
       }
 
@@ -526,8 +602,20 @@
       records.push(createRecord(dateValue, shiftValue));
       saveRecords(records);
       renderRecords();
+      // Save user settings (sheets url + email)
+      saveSettings({ sheetsUrl: sheetsUrlInput.value || '', email: notifyEmailInput.value || '' });
       shiftDate.value = '';
       shiftType.value = 'morning';
+      showToast('Shift added');
+
+      // send to sheets if configured
+      const record = records[records.length - 1];
+      if (sheetsUrlInput.value) {
+        sendToSheets(record).then(res => {
+          if (res.ok) showToast('Sent to Sheets');
+          else showToast('Sheets send failed');
+        });
+      }
     }
 
     function clearRecords() {
@@ -566,6 +654,10 @@
     monthFilter.addEventListener('change', () => {
       renderMonthSummary(loadRecords());
     });
+    // populate saved settings
+    const initialSettings = loadSettings();
+    if (initialSettings.sheetsUrl) sheetsUrlInput.value = initialSettings.sheetsUrl;
+    if (initialSettings.email) notifyEmailInput.value = initialSettings.email;
     renderRecords();
   </script>
 </body>
