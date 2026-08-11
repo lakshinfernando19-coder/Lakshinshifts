@@ -13,18 +13,19 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #120417;
-      --surface: rgba(255, 255, 255, 0.06);
-      --surface-strong: rgba(255, 255, 255, 0.10);
-      --border: rgba(255, 255, 255, 0.12);
+      --bg: #1a0211;
+      --surface: rgba(255, 255, 255, 0.05);
+      --surface-strong: rgba(255, 255, 255, 0.09);
+      --border: rgba(255, 255, 255, 0.10);
       --text: #fff6ff;
-      --muted: #e6d9f7;
-      /* three-color palette: pink, purple, soft white */
-      --accent-pink: #ff5fa8;
-      --accent-purple: #8a4bff;
-      --accent-soft: #ffdff7;
-      --purple-gradient: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 60%, var(--accent-soft) 100%);
-      --shadow: 0 28px 80px rgba(138, 75, 255, 0.20);
+      --muted: #f3dff0;
+      /* dark pink centered palette */
+      --accent-pink-dark: #ff1f7a;
+      --accent-pink: #ff4b9f;
+      --accent-purple: #9b3bff;
+      --accent-soft: #ffe6f6;
+      --purple-gradient: linear-gradient(135deg, var(--accent-pink-dark) 0%, var(--accent-pink) 45%, var(--accent-purple) 100%);
+      --shadow: 0 28px 80px rgba(155, 35, 120, 0.26);
     }
 
     * {
@@ -272,6 +273,33 @@
       min-width: 220px;
     }
     .toast.hide { display: none; }
+
+    /* Confirmation modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,6,12,0.6);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 80;
+    }
+    .modal {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 18px;
+      border-radius: 14px;
+      max-width: 420px;
+      width: 92%;
+      color: var(--text);
+      box-shadow: 0 18px 60px rgba(20,8,30,0.6);
+    }
+    .modal h3 { margin: 0 0 10px 0; }
+    .modal .modal-actions { display: flex; gap: 12px; margin-top: 14px; }
+    .modal .btn-cancel { background: rgba(255,255,255,0.06); color: var(--text); padding: 12px 14px; border-radius: 10px; border: none; }
+    .modal .btn-confirm { background: var(--purple-gradient); color: #fff; padding: 12px 14px; border-radius: 10px; border: none; }
+    .modal.hidden { display:none; }
   </style>
 </head>
 <body>
@@ -399,6 +427,17 @@
 
   <div id="toast" class="toast hide" role="status" aria-live="polite"> 
     <div id="toastText">Saved</div>
+  </div>
+
+  <div id="confirmBackdrop" class="modal-backdrop" style="display:none;">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>Confirm add shift?</h3>
+      <p class="note" style="margin:6px 0 0;">Do you want to add this shift now?</p>
+      <div class="modal-actions">
+        <button id="modalCancel" class="btn-cancel">Cancel</button>
+        <button id="modalConfirm" class="btn-confirm">Confirm</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -648,7 +687,22 @@
       URL.revokeObjectURL(url);
     }
 
-    addShift.addEventListener('click', addShiftRecord);
+    // show confirmation modal before adding
+    addShift.addEventListener('click', (e) => {
+      e.preventDefault();
+      const backdrop = document.getElementById('confirmBackdrop');
+      backdrop.style.display = 'flex';
+    });
+    const modalCancel = document.getElementById('modalCancel');
+    const modalConfirm = document.getElementById('modalConfirm');
+    modalCancel.addEventListener('click', () => {
+      document.getElementById('confirmBackdrop').style.display = 'none';
+      showToast('Cancelled');
+    });
+    modalConfirm.addEventListener('click', () => {
+      document.getElementById('confirmBackdrop').style.display = 'none';
+      addShiftRecord();
+    });
     clearAll.addEventListener('click', clearRecords);
     downloadCsv.addEventListener('click', downloadRecordsCsv);
     monthFilter.addEventListener('change', () => {
