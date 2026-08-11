@@ -339,15 +339,7 @@
     </div>
 
     <div class="card">
-      <h2>Monthly Summary</h2>
-      <div class="row single">
-        <div>
-          <label for="monthFilter">Select month</label>
-          <select id="monthFilter">
-            <option value="all">All months</option>
-          </select>
-        </div>
-      </div>
+      <h2>Current month summary</h2>
       <div class="summary" style="margin-top: 18px; grid-template-columns: repeat(3, minmax(0, 1fr));">
         <div class="summary-item">
           <strong id="monthCountShifts">0</strong>
@@ -376,6 +368,58 @@
           Remaining to target
         </div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Archive</h2>
+      <div class="row single">
+        <div>
+          <label for="archiveMonthFilter">Select past month</label>
+          <select id="archiveMonthFilter">
+            <option value="">Choose month</option>
+          </select>
+        </div>
+      </div>
+      <div class="summary" style="margin-top: 18px; grid-template-columns: repeat(3, minmax(0, 1fr));">
+        <div class="summary-item">
+          <strong id="archiveCountShifts">0</strong>
+          Shifts
+        </div>
+        <div class="summary-item">
+          <strong id="archiveCountMorning">0</strong>
+          Morning shifts
+        </div>
+        <div class="summary-item">
+          <strong id="archiveCountNight">0</strong>
+          Night shifts
+        </div>
+      </div>
+      <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));">
+        <div class="summary-item">
+          <strong id="archiveSalary">€0.00</strong>
+          Month salary
+        </div>
+        <div class="summary-item">
+          <strong id="archiveTarget">€1200.00</strong>
+          Salary target
+        </div>
+        <div class="summary-item">
+          <strong id="archiveDifference">€0.00</strong>
+          Remaining
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Shift</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Salary</th>
+          </tr>
+        </thead>
+        <tbody id="archiveTableBody"></tbody>
+      </table>
     </div>
 
     <div class="card">
@@ -444,13 +488,20 @@
     const countMorning = document.getElementById('countMorning');
     const countNight = document.getElementById('countNight');
     const totalSalary = document.getElementById('totalSalary');
-    const monthFilter = document.getElementById('monthFilter');
+    const archiveMonthFilter = document.getElementById('archiveMonthFilter');
     const monthCountShifts = document.getElementById('monthCountShifts');
     const monthCountMorning = document.getElementById('monthCountMorning');
     const monthCountNight = document.getElementById('monthCountNight');
     const monthSalary = document.getElementById('monthSalary');
     const monthTarget = document.getElementById('monthTarget');
     const monthDifference = document.getElementById('monthDifference');
+    const archiveCountShifts = document.getElementById('archiveCountShifts');
+    const archiveCountMorning = document.getElementById('archiveCountMorning');
+    const archiveCountNight = document.getElementById('archiveCountNight');
+    const archiveSalary = document.getElementById('archiveSalary');
+    const archiveTarget = document.getElementById('archiveTarget');
+    const archiveDifference = document.getElementById('archiveDifference');
+    const archiveTableBody = document.getElementById('archiveTableBody');
     const SHIFT_AMOUNT = 33.33;
     const MONTHLY_TARGET = 1200;
     const SETTINGS_KEY = 'myShiftTrackerSettings';
@@ -490,25 +541,27 @@
       return date.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
     }
 
-    function updateMonthFilter(records) {
-      const monthKeys = Array.from(new Set(records.map(record => getMonthKey(record.date))));
-      monthKeys.sort((a, b) => b.localeCompare(a));
-      const selected = monthFilter.value || 'all';
-      monthFilter.innerHTML = '<option value="all">All months</option>' + monthKeys.map(key => `
+    function getCurrentMonthKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function updateArchiveFilter(records) {
+      const currentMonthKey = getCurrentMonthKey();
+      const monthKeys = Array.from(new Set(records.map(record => getMonthKey(record.date))))
+        .filter(key => key !== currentMonthKey)
+        .sort((a, b) => b.localeCompare(a));
+      archiveMonthFilter.innerHTML = '<option value="">Choose month</option>' + monthKeys.map(key => `
         <option value="${key}">${formatMonthLabel(key)}</option>
       `).join('');
-      if (monthKeys.includes(selected)) {
-        monthFilter.value = selected;
-      } else {
-        monthFilter.value = 'all';
+      if (!monthKeys.includes(archiveMonthFilter.value)) {
+        archiveMonthFilter.value = '';
       }
     }
 
     function renderMonthSummary(records) {
-      const selectedMonth = monthFilter.value;
-      const filtered = selectedMonth === 'all'
-        ? records
-        : records.filter(record => getMonthKey(record.date) === selectedMonth);
+      const currentMonthKey = getCurrentMonthKey();
+      const filtered = records.filter(record => getMonthKey(record.date) === currentMonthKey);
 
       let morningCount = 0;
       let nightCount = 0;
@@ -527,6 +580,50 @@
       monthTarget.textContent = formatCurrency(MONTHLY_TARGET);
       const diff = Math.max(0, MONTHLY_TARGET - total);
       monthDifference.textContent = formatCurrency(diff);
+    }
+
+    function renderArchiveMonth(records) {
+      const selectedMonth = archiveMonthFilter.value;
+      if (!selectedMonth) {
+        archiveTableBody.innerHTML = '<tr><td colspan="5" style="color: var(--muted);">Select a past month to view archived shifts.</td></tr>';
+        archiveCountShifts.textContent = '0';
+        archiveCountMorning.textContent = '0';
+        archiveCountNight.textContent = '0';
+        archiveSalary.textContent = formatCurrency(0);
+        archiveTarget.textContent = formatCurrency(MONTHLY_TARGET);
+        archiveDifference.textContent = formatCurrency(MONTHLY_TARGET);
+        return;
+      }
+
+      const filtered = records.filter(record => getMonthKey(record.date) === selectedMonth);
+      archiveTableBody.innerHTML = '';
+      let morningCount = 0;
+      let nightCount = 0;
+      let total = 0;
+
+      filtered.forEach(record => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${record.date}</td>
+          <td>${record.shiftLabel}</td>
+          <td>${record.startTime}</td>
+          <td>${record.endTime}</td>
+          <td>${formatCurrency(record.salary)}</td>
+        `;
+        archiveTableBody.appendChild(row);
+
+        if (record.shift === 'morning') morningCount++;
+        if (record.shift === 'night') nightCount++;
+        total += record.salary;
+      });
+
+      archiveCountShifts.textContent = filtered.length;
+      archiveCountMorning.textContent = morningCount;
+      archiveCountNight.textContent = nightCount;
+      archiveSalary.textContent = formatCurrency(total);
+      archiveTarget.textContent = formatCurrency(MONTHLY_TARGET);
+      const diff = Math.max(0, MONTHLY_TARGET - total);
+      archiveDifference.textContent = formatCurrency(diff);
     }
 
     function showToast(text = 'Saved') {
@@ -558,10 +655,13 @@
       let morningCount = 0;
       let nightCount = 0;
       let total = 0;
+      const currentMonthKey = getCurrentMonthKey();
 
-      records.sort((a, b) => a.date.localeCompare(b.date));
+      const currentRecords = records
+        .filter(record => getMonthKey(record.date) === currentMonthKey)
+        .sort((a, b) => a.date.localeCompare(b.date));
 
-      records.forEach(record => {
+      currentRecords.forEach(record => {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${record.date}</td>
@@ -577,9 +677,10 @@
         total += record.salary;
       });
 
-      updateMonthFilter(records);
+      updateArchiveFilter(records);
       renderMonthSummary(records);
-      countShifts.textContent = records.length;
+      renderArchiveMonth(records);
+      countShifts.textContent = currentRecords.length;
       countMorning.textContent = morningCount;
       countNight.textContent = nightCount;
       totalSalary.textContent = formatCurrency(total);
@@ -698,8 +799,8 @@
     });
     clearAll.addEventListener('click', clearRecords);
     downloadCsv.addEventListener('click', downloadRecordsCsv);
-    monthFilter.addEventListener('change', () => {
-      renderMonthSummary(loadRecords());
+    archiveMonthFilter.addEventListener('change', () => {
+      renderArchiveMonth(loadRecords());
     });
     // populate saved settings
     const initialSettings = loadSettings();
