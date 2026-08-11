@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1b0b2d" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <title>Shift Tracker</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0517;
+      --surface: rgba(255, 255, 255, 0.08);
+      --surface-strong: rgba(255, 255, 255, 0.12);
+      --border: rgba(255, 255, 255, 0.14);
+      --text: #f6f2ff;
+      --muted: #c9bce4;
+      --accent: #9b5cff;
+      --accent-strong: #bf95ff;
+      --purple-gradient: linear-gradient(135deg, #6d3cff 0%, #a678ff 45%, #d6b1ff 100%);
+      --shadow: 0 32px 100px rgba(74, 43, 129, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top left, rgba(155, 92, 255, 0.28), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(115, 86, 255, 0.22), transparent 30%),
+        linear-gradient(180deg, #11071c 0%, #10071b 55%, #140a29 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.14;
+      filter: blur(20px) brightness(0.7);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      backdrop-filter: blur(24px);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 20px;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2.6rem, 4vw, 4rem);
+      line-height: 1.02;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      max-width: 640px;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    h2 {
+      margin-top: 0;
+      letter-spacing: -0.03em;
+      font-size: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .row {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .row.single {
+      grid-template-columns: 1fr;
+    }
+
+    input[type='date'],
+    select {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 16px 18px;
+      font-size: 1rem;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type='date']:focus,
+    select:focus {
+      border-color: rgba(155, 92, 255, 0.9);
+      box-shadow: 0 0 0 6px rgba(155, 92, 255, 0.14);
+    }
+
+    button {
+      width: 100%;
+      cursor: pointer;
+      border: none;
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.96;
+    }
+
+    button.primary {
+      background: var(--purple-gradient);
+      box-shadow: 0 18px 40px rgba(107, 68, 255, 0.25);
+      color: #fff;
+    }
+
+    button.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      margin-top: 24px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 16px 14px;
+      text-align: left;
+      color: var(--text);
+    }
+
+    th {
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    tr {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+    }
+
+    td {
+      border: none;
+      font-size: 0.96rem;
+    }
+
+    .summary {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .summary-item {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    }
+
+    .summary-item strong {
+      display: block;
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .note {
+      font-size: 1rem;
+      margin-top: 10px;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 760px) {
+      .row,
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>My Shift Tracker</h1>
+      <p class="note">Enter a date and choose morning, night, or both shifts. The page saves all shifts and lets you view each month separately.</p>
+      <div class="row single">
+        <div>
+          <label for="shiftDate">Date</label>
+          <input type="date" id="shiftDate" />
+        </div>
+        <div>
+          <label for="shiftType">Shift</label>
+          <select id="shiftType">
+            <option value="morning">Morning (10:00 - 15:30)</option>
+            <option value="night">Night (18:30 - 23:30)</option>
+            <option value="both">Both (10:00 - 23:30)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 18px;">
+        <button class="primary" id="addShift">Add Shift</button>
+        <button class="secondary" id="clearAll">Clear All</button>
+        <button class="secondary" id="downloadCsv">Download Excel CSV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Monthly Summary</h2>
+      <div class="row single">
+        <div>
+          <label for="monthFilter">Select month</label>
+          <select id="monthFilter">
+            <option value="all">All months</option>
+          </select>
+        </div>
+      </div>
+      <div class="summary" style="margin-top: 18px; grid-template-columns: repeat(4, minmax(0, 1fr));">
+        <div class="summary-item">
+          <strong id="monthCountShifts">0</strong>
+          Shifts this month
+        </div>
+        <div class="summary-item">
+          <strong id="monthCountMorning">0</strong>
+          Morning shifts
+        </div>
+        <div class="summary-item">
+          <strong id="monthCountNight">0</strong>
+          Night shifts
+        </div>
+        <div class="summary-item">
+          <strong id="monthCountBoth">0</strong>
+          Both shifts
+        </div>
+      </div>
+      <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));">
+        <div class="summary-item">
+          <strong id="monthSalary">€0.00</strong>
+          Month salary
+        </div>
+        <div class="summary-item">
+          <strong id="monthTarget">€1200.00</strong>
+          Salary target
+        </div>
+        <div class="summary-item">
+          <strong id="monthDifference">€0.00</strong>
+          Remaining to target
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Recorded Shifts</h2>
+      <div class="summary">
+        <div class="summary-item">
+          <strong id="countShifts">0</strong>
+          Total shifts
+        </div>
+        <div class="summary-item">
+          <strong id="countMorning">0</strong>
+          Morning shifts
+        </div>
+        <div class="summary-item">
+          <strong id="countNight">0</strong>
+          Night shifts
+        </div>
+        <div class="summary-item">
+          <strong id="countBoth">0</strong>
+          Both shifts
+        </div>
+      </div>
+      <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(4, minmax(0, 1fr));">
+        <div class="summary-item" style="grid-column: span 4;">
+          <strong id="totalSalary">€0.00</strong>
+          Total salary
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Shift</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Salary</th>
+          </tr>
+        </thead>
+        <tbody id="shiftTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="footer">Saved locally in your browser. Use the download button to export to Excel-compatible CSV.</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'myShiftTrackerRecords';
+    const shiftDate = document.getElementById('shiftDate');
+    const shiftType = document.getElementById('shiftType');
+    const addShift = document.getElementById('addShift');
+    const clearAll = document.getElementById('clearAll');
+    const downloadCsv = document.getElementById('downloadCsv');
+    const shiftTableBody = document.getElementById('shiftTableBody');
+    const countShifts = document.getElementById('countShifts');
+    const countMorning = document.getElementById('countMorning');
+    const countNight = document.getElementById('countNight');
+    const countBoth = document.getElementById('countBoth');
+    const totalSalary = document.getElementById('totalSalary');
+    const monthFilter = document.getElementById('monthFilter');
+    const monthCountShifts = document.getElementById('monthCountShifts');
+    const monthCountMorning = document.getElementById('monthCountMorning');
+    const monthCountNight = document.getElementById('monthCountNight');
+    const monthCountBoth = document.getElementById('monthCountBoth');
+    const monthSalary = document.getElementById('monthSalary');
+    const monthTarget = document.getElementById('monthTarget');
+    const monthDifference = document.getElementById('monthDifference');
+    const SHIFT_AMOUNT = 33.33;
+    const MONTHLY_TARGET = 1200;
+
+    function loadRecords() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }
+
+    function saveRecords(records) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR' }).format(value);
+    }
+
+    function getMonthKey(dateString) {
+      return dateString.slice(0, 7);
+    }
+
+    function formatMonthLabel(monthKey) {
+      const [year, month] = monthKey.split('-');
+      const date = new Date(`${year}-${month}-01`);
+      return date.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
+    }
+
+    function updateMonthFilter(records) {
+      const monthKeys = Array.from(new Set(records.map(record => getMonthKey(record.date))));
+      monthKeys.sort((a, b) => b.localeCompare(a));
+      const selected = monthFilter.value || 'all';
+      monthFilter.innerHTML = '<option value="all">All months</option>' + monthKeys.map(key => `
+        <option value="${key}">${formatMonthLabel(key)}</option>
+      `).join('');
+      if (monthKeys.includes(selected)) {
+        monthFilter.value = selected;
+      } else {
+        monthFilter.value = 'all';
+      }
+    }
+
+    function renderMonthSummary(records) {
+      const selectedMonth = monthFilter.value;
+      const filtered = selectedMonth === 'all'
+        ? records
+        : records.filter(record => getMonthKey(record.date) === selectedMonth);
+
+      let morningCount = 0;
+      let nightCount = 0;
+      let bothCount = 0;
+      let total = 0;
+
+      filtered.forEach(record => {
+        if (record.shift === 'morning') morningCount++;
+        if (record.shift === 'night') nightCount++;
+        if (record.shift === 'both') bothCount++;
+        total += record.salary;
+      });
+
+      monthCountShifts.textContent = filtered.length;
+      monthCountMorning.textContent = morningCount;
+      monthCountNight.textContent = nightCount;
+      monthCountBoth.textContent = bothCount;
+      monthSalary.textContent = formatCurrency(total);
+      monthTarget.textContent = formatCurrency(MONTHLY_TARGET);
+      const diff = Math.max(0, MONTHLY_TARGET - total);
+      monthDifference.textContent = formatCurrency(diff);
+    }
+
+    function renderRecords() {
+      const records = loadRecords();
+      shiftTableBody.innerHTML = '';
+      let morningCount = 0;
+      let nightCount = 0;
+      let bothCount = 0;
+      let total = 0;
+
+      records.sort((a, b) => a.date.localeCompare(b.date));
+
+      records.forEach(record => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${record.date}</td>
+          <td>${record.shiftLabel}</td>
+          <td>${record.startTime}</td>
+          <td>${record.endTime}</td>
+          <td>${formatCurrency(record.salary)}</td>
+        `;
+        shiftTableBody.appendChild(row);
+
+        if (record.shift === 'morning') morningCount++;
+        if (record.shift === 'night') nightCount++;
+        if (record.shift === 'both') bothCount++;
+        total += record.salary;
+      });
+
+      updateMonthFilter(records);
+      renderMonthSummary(records);
+      countShifts.textContent = records.length;
+      countMorning.textContent = morningCount;
+      countNight.textContent = nightCount;
+      countBoth.textContent = bothCount;
+      totalSalary.textContent = formatCurrency(total);
+    }
+
+    function createRecord(date, shift) {
+      let shiftLabel = 'Night';
+      let startTime = '18:30';
+      let endTime = '23:30';
+      let salary = SHIFT_AMOUNT;
+
+      if (shift === 'morning') {
+        shiftLabel = 'Morning';
+        startTime = '10:00';
+        endTime = '15:30';
+      } else if (shift === 'both') {
+        shiftLabel = 'Both';
+        startTime = '10:00';
+        endTime = '23:30';
+        salary = SHIFT_AMOUNT * 2;
+      }
+
+      return {
+        date,
+        shift,
+        shiftLabel,
+        startTime,
+        endTime,
+        salary,
+      };
+    }
+
+    function addShiftRecord() {
+      const dateValue = shiftDate.value;
+      const shiftValue = shiftType.value;
+
+      if (!dateValue) {
+        alert('Please choose a date before adding a shift.');
+        return;
+      }
+
+      const records = loadRecords();
+      records.push(createRecord(dateValue, shiftValue));
+      saveRecords(records);
+      renderRecords();
+      shiftDate.value = '';
+      shiftType.value = 'morning';
+    }
+
+    function clearRecords() {
+      if (!confirm('Clear all saved shift records?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderRecords();
+    }
+
+    function downloadRecordsCsv() {
+      const records = loadRecords();
+      if (!records.length) {
+        alert('No records to download. Add at least one shift first.');
+        return;
+      }
+
+      const headers = ['Date', 'Shift', 'Start', 'End', 'Salary'];
+      const rows = records.map(record => [record.date, record.shiftLabel, record.startTime, record.endTime, record.salary.toFixed(2)]);
+      const csv = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\r\n');
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'shift-records.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    addShift.addEventListener('click', addShiftRecord);
+    clearAll.addEventListener('click', clearRecords);
+    downloadCsv.addEventListener('click', downloadRecordsCsv);
+    monthFilter.addEventListener('change', () => {
+      renderMonthSummary(loadRecords());
+    });
+    renderRecords();
+  </script>
+</body>
+</html>
