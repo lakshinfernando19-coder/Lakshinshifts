@@ -3,445 +3,315 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#210b35" />
+  <meta name="theme-color" content="#140b22" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon.svg" />
-  <title>Shift Tracker</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>Shift Pro Tracker</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg: #0d071d;
-      --surface: rgba(20, 8, 45, 0.88);
-      --surface-strong: rgba(27, 11, 67, 0.94);
-      --border: rgba(173, 100, 225, 0.20);
-      --text: #f6efff;
-      --muted: #d7c4ff;
-      --accent-purple-dark: #5f1b94;
-      --accent-purple: #8c42d8;
-      --accent-light: #c38fff;
-      --accent-soft: rgba(130, 75, 205, 0.16);
-      --primary-gradient: linear-gradient(135deg, var(--accent-purple-dark) 0%, var(--accent-purple) 55%, var(--accent-light) 100%);
-      --shadow: 0 26px 60px rgba(68, 26, 105, 0.28);
+      --bg: #0a0714;
+      --bg-2: #18112d;
+      --surface: rgba(24, 15, 40, 0.8);
+      --surface-strong: rgba(33, 19, 52, 0.95);
+      --surface-soft: rgba(255,255,255,0.04);
+      --line: rgba(174, 138, 255, 0.22);
+      --text: #f7f1ff;
+      --muted: #d7c9f9;
+      --primary: #9d5cff;
+      --primary-strong: #7d35d6;
+      --green: #74e0bb;
+      --shadow: 0 28px 70px rgba(11, 6, 22, 0.55);
+      --radius: 28px;
+      --transition: 180ms ease;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: Inter, "Segoe UI", sans-serif;
       color: var(--text);
-      background: radial-gradient(circle at top left, rgba(176, 103, 241, 0.18), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(102, 30, 145, 0.24), transparent 32%),
-        linear-gradient(180deg, #0d071d 0%, #180a35 45%, #240d4d 100%);
-      overflow-x: hidden;
+      background: radial-gradient(circle at top left, rgba(166, 111, 255, 0.2), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(103, 72, 177, 0.18), transparent 38%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
     }
 
     body::before {
-      content: '';
+      content: "";
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 20% 20%, rgba(189, 124, 255, 0.16), transparent 22%),
-        radial-gradient(circle at 80% 80%, rgba(130, 80, 210, 0.18), transparent 26%);
       pointer-events: none;
-      z-index: -1;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.02) 45%, transparent 100%);
     }
 
-    .container {
-      width: min(1080px, calc(100% - 32px));
+    .app-shell {
+      width: min(1100px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 32px 0 48px;
+      padding: 28px 0 48px;
     }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      backdrop-filter: blur(24px);
-      box-shadow: var(--shadow);
-      padding: 26px;
-      margin-bottom: 24px;
-    }
-
-    .hero {
+    .topbar {
       display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      gap: 20px;
       justify-content: space-between;
-      margin-bottom: 22px;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(2.6rem, 4vw, 4rem);
-      line-height: 1.02;
-    }
-
-    .hero p {
-      margin: 12px 0 0;
-      color: var(--muted);
-      max-width: 640px;
-      font-size: 1rem;
-      line-height: 1.8;
-    }
-
-    h2 {
-      margin-top: 0;
-      letter-spacing: -0.03em;
-      font-size: 1.5rem;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-      font-size: 0.95rem;
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .row {
-      display: grid;
+      align-items: center;
       gap: 18px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding: 18px 20px;
+      background: rgba(15, 10, 26, 0.7);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+      backdrop-filter: blur(18px);
     }
 
-    .row.single {
-      grid-template-columns: 1fr;
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-mark {
+      width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; color: white;
+      background: linear-gradient(135deg, var(--primary-strong), var(--primary)); box-shadow: 0 12px 28px rgba(157, 92, 255, 0.4);
+    }
+    .brand h1 { margin: 0; font-size: clamp(1.6rem, 2vw, 2.3rem); letter-spacing: -0.04em; }
+    .brand small { display: block; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.7rem; }
+
+    .account-panel {
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--line);
+      border-radius: 18px; min-width: min(100%, 330px);
+    }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 18px rgba(116,224,187,0.9); flex-shrink: 0; }
+    .account-panel strong { display: block; font-size: 0.9rem; line-height: 1.2; }
+    .account-panel small { color: var(--muted); letter-spacing: 0.02em; }
+    .ghost-button {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: var(--text); border-radius: 12px; padding: 10px 12px;
+      font-weight: 700; cursor: pointer; transition: transform var(--transition), background var(--transition);
+    }
+    .ghost-button:hover { transform: translateY(-1px); }
+
+    .grid {
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px; margin-bottom: 22px;
     }
 
-    input[type='date'],
-    select {
-      width: 100%;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 16px 18px;
-      font-size: 1rem;
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.08);
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    .panel {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 20px 18px; box-shadow: var(--shadow); backdrop-filter: blur(18px);
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px;
+    }
+    .panel-header h2 { margin: 0; font-size: 1.3rem; letter-spacing: -0.03em; }
+    .chip {
+      display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px; background: rgba(116,224,187,0.08);
+      border: 1px solid rgba(116,224,187,0.2); color: var(--green); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
     }
 
-    input[type='date']:focus,
-    select:focus {
-      border-color: rgba(140, 66, 216, 0.92);
-      box-shadow: 0 0 0 6px rgba(140, 66, 216, 0.16);
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .field-grid.compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    label { display: block; font-size: 0.9rem; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+    input[type="date"], input[type="number"], input[type="email"], select {
+      width: 100%; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: var(--text); border-radius: 16px; padding: 14px 14px; font-size: 1rem; outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    }
+    input[type="date"]:focus, input[type="number"]:focus, input[type="email"]:focus, select:focus {
+      border-color: rgba(157, 92, 255, 0.8); box-shadow: 0 0 0 5px rgba(157, 92, 255, 0.15);
     }
 
+    .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
     button {
-      width: 100%;
-      cursor: pointer;
-      border: none;
-      border-radius: 18px;
-      padding: 16px 18px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      border: 0; border-radius: 16px; padding: 14px 18px; font-size: 0.96rem; font-weight: 800; color: var(--text); cursor: pointer; transition: transform var(--transition), opacity var(--transition), box-shadow var(--transition);
     }
-
-    button:hover {
-      transform: translateY(-2px);
-      opacity: 0.96;
+    button:hover { transform: translateY(-2px); opacity: 0.98; }
+    .primary {
+      background: linear-gradient(135deg, var(--primary-strong) 0%, var(--primary) 55%, #c091ff 100%); box-shadow: 0 20px 38px rgba(125, 53, 214, 0.35);
     }
+    .secondary { background: rgba(255,255,255,0.04); border: 1px solid var(--line); }
 
-
-    button.primary {
-      background: var(--primary-gradient);
-      box-shadow: 0 18px 40px rgba(118, 51, 173, 0.28);
-      color: #fff;
+    .stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+    .stat-card {
+      padding: 18px 16px; border-radius: 18px; background: var(--surface-soft); border: 1px solid rgba(255,255,255,0.06); min-height: 115px;
     }
+    .stat-card span { display: block; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat-card strong { display: block; margin-top: 10px; font-size: clamp(1.4rem, 2vw, 2rem); letter-spacing: -0.03em; }
 
-    button.secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      box-shadow: inset 0 0 0 1px rgba(120, 184, 255, 0.18);
-    }
+    .toggle-wrap { display: flex; align-items: center; gap: 10px; color: var(--muted); font-weight: 700; white-space: nowrap; }
+    .toggle-wrap input { width: 18px; height: 18px; accent-color: var(--primary); }
 
-    .table-wrapper {
-      overflow-x: auto;
-      margin-top: 18px;
-      border-radius: 22px;
-    }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .mini-card { border-radius: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); padding: 18px 14px; text-align: center; }
+    .mini-card strong { display: block; font-size: clamp(1.3rem, 2vw, 1.9rem); letter-spacing: -0.04em; margin-bottom: 6px; }
+    .mini-card span { font-size: 0.9rem; color: var(--muted); }
 
-    .table-wrapper::-webkit-scrollbar {
-      height: 8px;
-    }
+    .table-wrapper { overflow-x: auto; margin-top: 14px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.06); }
+    .table-wrapper table { width: 100%; min-width: 720px; border-collapse: separate; border-spacing: 0; }
+    th, td { padding: 15px 14px; text-align: left; }
+    thead th { background: rgba(255,255,255,0.04); color: var(--muted); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    tbody tr { background: rgba(255,255,255,0.015); border-top: 1px solid rgba(255,255,255,0.05); }
+    tbody tr:hover { background: rgba(157, 92, 255, 0.04); }
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .row-actions button { padding: 9px 10px; border-radius: 10px; font-size: 0.78rem; }
+    .muted-copy { margin-top: 14px; color: var(--muted); font-size: 0.92rem; line-height: 1.6; }
 
-    .table-wrapper::-webkit-scrollbar-thumb {
-      background: rgba(90, 155, 255, 0.35);
-      border-radius: 99px;
-    }
-
-    table {
-      width: 100%;
-      min-width: 620px;
-      border-collapse: separate;
-      border-spacing: 0 10px;
-      margin-top: 0;
-      overflow: hidden;
-    }
-
-    th,
-    td {
-      padding: 16px 14px;
-      text-align: left;
-      color: var(--text);
-    }
-
-    th {
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-
-    tr {
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 18px;
-    }
-
-    td {
-      border: none;
-      font-size: 0.96rem;
-    }
-
-    .summary {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      margin-top: 18px;
-    }
-
-    .summary-item {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 22px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-    }
-
-    .summary-item strong {
-      display: block;
-      font-size: 1.7rem;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-
-    .note {
-      font-size: 1rem;
-      margin-top: 10px;
-      color: var(--muted);
-      max-width: 640px;
-      line-height: 1.7;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 12px;
-      color: rgba(255, 255, 255, 0.65);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 760px) {
-      .row,
-      .summary {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      /* increase touch sizes on mobile */
-      input[type='date'],
-      select,
-      button { padding: 18px 20px; font-size: 1.06rem; }
-    }
-
-    /* Toast / confirmation */
     .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 28px;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text);
-      padding: 14px 18px;
-      border-radius: 14px;
-      box-shadow: 0 12px 40px rgba(20,8,30,0.6);
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      z-index: 60;
-      min-width: 220px;
+      position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); min-width: 220px; max-width: 90vw; padding: 14px 18px; border-radius: 14px; background: rgba(18, 12, 26, 0.9);
+      border: 1px solid rgba(255,255,255,0.08); box-shadow: var(--shadow); z-index: 70; text-align: center; transition: opacity var(--transition), transform var(--transition); opacity: 1;
     }
-    .toast.hide { display: none; }
+    .toast.hide { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
 
-    /* Confirmation modal */
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(10,6,12,0.6);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 80;
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(8, 6, 13, 0.7); z-index: 80; backdrop-filter: blur(6px);
     }
     .modal {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 18px;
-      border-radius: 14px;
-      max-width: 420px;
-      width: 92%;
-      color: var(--text);
-      box-shadow: 0 18px 60px rgba(20,8,30,0.6);
+      width: min(420px, calc(100% - 24px)); background: linear-gradient(180deg, rgba(26, 17, 38, 0.96), rgba(15, 10, 24, 0.96)); border: 1px solid var(--line); border-radius: 24px; padding: 20px; box-shadow: var(--shadow);
     }
-    .modal h3 { margin: 0 0 10px 0; }
-    .modal .modal-actions { display: flex; gap: 12px; margin-top: 14px; }
-    .modal .btn-cancel { background: rgba(255,255,255,0.06); color: var(--text); padding: 12px 14px; border-radius: 10px; border: none; }
-    .modal .btn-confirm { background: var(--primary-gradient); color: #fff; padding: 12px 14px; border-radius: 10px; border: none; }
-    .modal.hidden { display:none; }
+    .modal h3 { margin: 0 0 10px; font-size: 1.3rem; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+
+    @media (max-width: 860px) {
+      .grid, .field-grid.compact { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .account-panel { width: 100%; justify-content: space-between; }
+    }
+    @media (max-width: 540px) {
+      .field-grid, .stats-grid, .summary-grid { grid-template-columns: 1fr; }
+      .action-buttons { flex-direction: column; }
+      .action-buttons > button, .row-actions > button, .ghost-button { width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>My Shift Tracker</h1>
-      <p class="note">Enter a date and choose morning, night, or both shifts. The page saves all shifts and lets you view each month separately.</p>
-      <div class="row single">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
         <div>
-          <label for="shiftDate">Date</label>
-          <input type="date" id="shiftDate" />
-        </div>
-        <div>
-          <label for="shiftType">Shift</label>
-          <select id="shiftType">
-            <option value="morning">Morning (10:00 - 15:30)</option>
-            <option value="night">Night (18:30 - 23:30)</option>
-            <option value="both">Both (10:00 - 23:30)</option>
-          </select>
+          <h1>Shift Pro</h1>
+          <small>Payroll dashboard</small>
         </div>
       </div>
-      <div class="row" style="margin-top: 18px;">
-        <button class="primary" id="addShift">Add Shift</button>
-        <button class="secondary" id="clearAll">Clear All</button>
-        <button class="secondary" id="downloadCsv">Download Excel CSV</button>
-        <button class="secondary" id="emailSummary">Email Summary</button>
-        <button class="secondary" id="exportPdf">Export as PDF</button>
-      </div>
-    </div>
 
-    <div class="card">
-      <h2>Advanced options</h2>
-      <div class="row single" style="margin-top: 12px;">
+      <div class="account-panel">
+        <span class="status-dot" id="syncDot" aria-label="sync status"></span>
         <div>
-          <label for="shiftAmount">Base shift salary (€)</label>
-          <input type="number" id="shiftAmount" min="0" step="0.01" />
+          <strong id="accountLabel">lakshinfernando19@gmail.com</strong>
+          <small id="syncLabel">Offline-ready</small>
         </div>
-        <div>
-          <label for="monthlyTargetInput">Monthly salary target (€)</label>
-          <input type="number" id="monthlyTargetInput" min="0" step="1" />
+        <button class="ghost-button" id="googleSignin" type="button">Connect Gmail</button>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Add shift</h2>
+          <span class="chip" id="liveTime">Live</span>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label for="shiftDate">Date</label>
+            <input type="date" id="shiftDate" />
+          </div>
+          <div>
+            <label for="shiftType">Shift</label>
+            <select id="shiftType">
+              <option value="morning">Morning (10:00 - 15:30)</option>
+              <option value="night">Night (18:30 - 23:30)</option>
+              <option value="both">Both (10:00 - 23:30)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="addShift" type="button" class="primary">Add shift</button>
+          <button id="downloadCsv" type="button" class="secondary">Export CSV</button>
         </div>
       </div>
-      <div class="row" style="margin-top: 18px;">
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Overview</h2>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Total shifts</span>
+            <strong id="countShifts">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Morning</span>
+            <strong id="countMorning">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Night</span>
+            <strong id="countNight">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Month pay</span>
+            <strong id="monthSalary">€0.00</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Payroll settings</h2>
+        <div class="toggle-wrap">
+          <label for="autoSendToggle">Auto send</label>
+          <input id="autoSendToggle" type="checkbox" />
+        </div>
+      </div>
+
+      <div class="field-grid compact">
+        <div>
+          <label for="shiftAmount">Shift value (€)</label>
+          <input id="shiftAmount" type="number" min="0" step="0.01" />
+        </div>
+        <div>
+          <label for="monthlyTargetInput">Monthly target (€)</label>
+          <input id="monthlyTargetInput" type="number" min="0" step="1" />
+        </div>
         <div>
           <label for="summaryEmail">Summary email</label>
-          <input type="email" id="summaryEmail" placeholder="you@example.com" />
-        </div>
-        <div>
-          <label for="autoSendToggle">Auto-send month-end summary</label>
-          <input type="checkbox" id="autoSendToggle" />
+          <input id="summaryEmail" type="email" value="lakshinfernando19@gmail.com" />
         </div>
       </div>
-      <div class="row" style="margin-top: 18px;">
-        <button class="secondary" id="saveOptions">Save options</button>
-        <button class="secondary" id="resetOptions">Reset options</button>
-      </div>
-    </div>
 
-    <div class="card">
-      <h2>Current month summary</h2>
-      <div class="summary" style="margin-top: 18px; grid-template-columns: repeat(3, minmax(0, 1fr));">
-        <div class="summary-item">
-          <strong id="monthCountShifts">0</strong>
-          Shifts this month
-        </div>
-        <div class="summary-item">
-          <strong id="monthCountMorning">0</strong>
-          Morning shifts
-        </div>
-        <div class="summary-item">
-          <strong id="monthCountNight">0</strong>
-          Night shifts
-        </div>
+      <div class="action-buttons" style="margin-top: 16px;">
+        <button id="saveOptions" type="button" class="secondary">Save settings</button>
+        <button id="resetOptions" type="button" class="secondary">Reset</button>
+        <button id="emailSummary" type="button" class="secondary">Send summary</button>
       </div>
-      <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));">
-        <div class="summary-item">
-          <strong id="monthSalary">€0.00</strong>
-          Month salary
-        </div>
-        <div class="summary-item">
-          <strong id="monthTarget">€1200.00</strong>
-          Salary target
-        </div>
-        <div class="summary-item">
-          <strong id="monthDifference">€0.00</strong>
-          Remaining to target
-        </div>
-      </div>
-    </div>
+    </section>
 
-    <div class="card">
-      <h2>Archive</h2>
-      <div class="row single">
-        <div>
-          <label for="archiveMonthFilter">Select past month</label>
-          <select id="archiveMonthFilter">
-            <option value="">Choose month</option>
-          </select>
-        </div>
+    <section class="panel" style="margin-top: 22px;">
+      <div class="panel-header">
+        <h2>Monthly report</h2>
+        <select id="archiveMonthFilter" aria-label="Select archive month" style="max-width: 220px;">
+          <option value="">Past months</option>
+        </select>
       </div>
-      <div class="summary" style="margin-top: 18px; grid-template-columns: repeat(3, minmax(0, 1fr));">
-        <div class="summary-item">
-          <strong id="archiveCountShifts">0</strong>
-          Shifts
-        </div>
-        <div class="summary-item">
-          <strong id="archiveCountMorning">0</strong>
-          Morning shifts
-        </div>
-        <div class="summary-item">
-          <strong id="archiveCountNight">0</strong>
-          Night shifts
-        </div>
+
+      <div class="summary-grid">
+        <div class="mini-card"><strong id="monthCountShifts">0</strong><span>Shifts</span></div>
+        <div class="mini-card"><strong id="monthCountMorning">0</strong><span>Morning</span></div>
+        <div class="mini-card"><strong id="monthCountNight">0</strong><span>Night</span></div>
       </div>
-      <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(3, minmax(0, 1fr));">
-        <div class="summary-item">
-          <strong id="archiveSalary">€0.00</strong>
-          Month salary
-        </div>
-        <div class="summary-item">
-          <strong id="archiveTarget">€1200.00</strong>
-          Salary target
-        </div>
-        <div class="summary-item">
-          <strong id="archiveDifference">€0.00</strong>
-          Remaining
-        </div>
+
+      <div class="summary-grid">
+        <div class="mini-card"><strong id="monthTarget">€1200.00</strong><span>Target</span></div>
+        <div class="mini-card"><strong id="totalSalary">€0.00</strong><span>Total pay</span></div>
+        <div class="mini-card"><strong id="monthDifference">€0.00</strong><span>Remaining</span></div>
       </div>
+    </section>
+
+    <section class="panel" style="margin-top: 22px;">
+      <div class="panel-header">
+        <h2>Recorded shifts</h2>
+      </div>
+
       <div class="table-wrapper">
         <table>
           <thead>
@@ -451,195 +321,124 @@
               <th>Start</th>
               <th>End</th>
               <th>Salary</th>
-            </tr>
-          </thead>
-          <tbody id="archiveTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Recorded Shifts</h2>
-      <div class="summary">
-        <div class="summary-item">
-          <strong id="countShifts">0</strong>
-          Total shifts
-        </div>
-        <div class="summary-item">
-          <strong id="countMorning">0</strong>
-          Morning shifts
-        </div>
-        <div class="summary-item">
-          <strong id="countNight">0</strong>
-          Night shifts
-        </div>
-      </div>
-      <div class="summary" style="margin-top: 12px; grid-template-columns: repeat(4, minmax(0, 1fr));">
-        <div class="summary-item" style="grid-column: span 4;">
-          <strong id="totalSalary">€0.00</strong>
-          Total salary
-        </div>
-      </div>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Shift</th>
-              <th>Start</th>
-              <th>End</th>
-              <th>Salary</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="shiftTableBody"></tbody>
         </table>
       </div>
-    </div>
 
-    <div class="footer">Saved locally in your browser. Use the download button to export to Excel-compatible CSV.</div>
+      <p class="muted-copy">This page is built to stay smooth on desktop, tablet, and mobile, with immediate local syncing and Gmail-ready summary delivery.</p>
+    </section>
   </div>
 
-  <div id="toast" class="toast hide" role="status" aria-live="polite"> 
-    <div id="toastText">Saved</div>
+  <div id="toast" class="toast hide" role="status" aria-live="polite">
+    <span id="toastText">Saved</span>
   </div>
 
-  <div id="confirmBackdrop" class="modal-backdrop" style="display:none;">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h3>Confirm add shift?</h3>
-      <p class="note" style="margin:6px 0 0;">Do you want to add this shift now?</p>
+  <div id="confirmBackdrop" class="modal-backdrop" aria-modal="true" role="dialog">
+    <div class="modal">
+      <h3>Confirm shift</h3>
+      <p class="muted-copy" style="margin: 0;">Do you want to add this shift to the tracker?</p>
       <div class="modal-actions">
-        <button id="modalCancel" class="btn-cancel">Cancel</button>
-        <button id="modalConfirm" class="btn-confirm">Confirm</button>
+        <button type="button" class="secondary" id="modalCancel">Cancel</button>
+        <button type="button" class="primary" id="modalConfirm">Confirm</button>
       </div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'myShiftTrackerRecords';
-    const shiftDate = document.getElementById('shiftDate');
-    const shiftType = document.getElementById('shiftType');
-    const addShift = document.getElementById('addShift');
-    const clearAll = document.getElementById('clearAll');
-    const downloadCsv = document.getElementById('downloadCsv');
-    const shiftTableBody = document.getElementById('shiftTableBody');
-    const countShifts = document.getElementById('countShifts');
-    const countMorning = document.getElementById('countMorning');
-    const countNight = document.getElementById('countNight');
-    const totalSalary = document.getElementById('totalSalary');
-    const archiveMonthFilter = document.getElementById('archiveMonthFilter');
-    const monthCountShifts = document.getElementById('monthCountShifts');
-    const monthCountMorning = document.getElementById('monthCountMorning');
-    const monthCountNight = document.getElementById('monthCountNight');
-    const monthSalary = document.getElementById('monthSalary');
-    const monthTarget = document.getElementById('monthTarget');
-    const monthDifference = document.getElementById('monthDifference');
-    const archiveCountShifts = document.getElementById('archiveCountShifts');
-    const archiveCountMorning = document.getElementById('archiveCountMorning');
-    const archiveCountNight = document.getElementById('archiveCountNight');
-    const archiveSalary = document.getElementById('archiveSalary');
-    const archiveTarget = document.getElementById('archiveTarget');
-    const archiveDifference = document.getElementById('archiveDifference');
-    const archiveTableBody = document.getElementById('archiveTableBody');
-    const emailSummary = document.getElementById('emailSummary');
-    const exportPdf = document.getElementById('exportPdf');
-    const shiftAmountInput = document.getElementById('shiftAmount');
-    const monthlyTargetInput = document.getElementById('monthlyTargetInput');
-    const autoSendToggle = document.getElementById('autoSendToggle');
-    const summaryEmailInput = document.getElementById('summaryEmail');
-    const saveOptions = document.getElementById('saveOptions');
-    const resetOptions = document.getElementById('resetOptions');
-    const SETTINGS_KEY = 'myShiftTrackerSettings';
+    const STORAGE_KEY = 'shiftTrackerRecordsV2';
+    const SETTINGS_KEY = 'shiftTrackerSettingsV2';
     const DEFAULT_EMAIL = 'lakshinfernando19@gmail.com';
-    const SHIFT_AMOUNT = 33.33;
-    const MONTHLY_TARGET = 1200;
+    const DEFAULT_SHIFT_RATE = 33.33;
+    const DEFAULT_TARGET = 1200;
+    const SYNC_CHANNEL = 'shiftTrackerSync';
 
-    function loadRecords() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const records = raw ? JSON.parse(raw) : [];
-      return normalizeRecords(Array.isArray(records) ? records : []);
-    }
+    const elements = {
+      shiftDate: document.getElementById('shiftDate'),
+      shiftType: document.getElementById('shiftType'),
+      shiftAmount: document.getElementById('shiftAmount'),
+      monthlyTargetInput: document.getElementById('monthlyTargetInput'),
+      summaryEmail: document.getElementById('summaryEmail'),
+      autoSendToggle: document.getElementById('autoSendToggle'),
+      addShift: document.getElementById('addShift'),
+      downloadCsv: document.getElementById('downloadCsv'),
+      saveOptions: document.getElementById('saveOptions'),
+      resetOptions: document.getElementById('resetOptions'),
+      emailSummary: document.getElementById('emailSummary'),
+      shiftTableBody: document.getElementById('shiftTableBody'),
+      countShifts: document.getElementById('countShifts'),
+      countMorning: document.getElementById('countMorning'),
+      countNight: document.getElementById('countNight'),
+      monthSalary: document.getElementById('monthSalary'),
+      monthTarget: document.getElementById('monthTarget'),
+      monthDifference: document.getElementById('monthDifference'),
+      monthCountShifts: document.getElementById('monthCountShifts'),
+      monthCountMorning: document.getElementById('monthCountMorning'),
+      monthCountNight: document.getElementById('monthCountNight'),
+      archiveMonthFilter: document.getElementById('archiveMonthFilter'),
+      totalSalary: document.getElementById('totalSalary'),
+      toast: document.getElementById('toast'),
+      toastText: document.getElementById('toastText'),
+      confirmBackdrop: document.getElementById('confirmBackdrop'),
+      modalCancel: document.getElementById('modalCancel'),
+      modalConfirm: document.getElementById('modalConfirm'),
+      syncLabel: document.getElementById('syncLabel'),
+      syncDot: document.getElementById('syncDot'),
+      accountLabel: document.getElementById('accountLabel'),
+      liveTime: document.getElementById('liveTime'),
+      googleSignin: document.getElementById('googleSignin')
+    };
 
-    function saveRecords(records) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (error) {
+        return {};
+      }
     }
 
     function saveSettings(settings) {
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     }
 
-    function loadSettings() {
-      const raw = localStorage.getItem(SETTINGS_KEY);
-      return raw ? JSON.parse(raw) : {};
-    }
-
-    function generateId() {
-      return window.crypto?.randomUUID ? crypto.randomUUID() : `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    }
-
-    function normalizeRecords(records) {
-      let changed = false;
-      records.forEach(record => {
-        if (!record.id) {
-          record.id = generateId();
-          changed = true;
-        }
-      });
-      if (changed) saveRecords(records);
-      return records;
-    }
-
     function getSettings() {
       const saved = loadSettings();
       return {
-        shiftAmount: Number(saved.shiftAmount ?? SHIFT_AMOUNT),
-        monthlyTarget: Number(saved.monthlyTarget ?? MONTHLY_TARGET),
+        shiftAmount: Number(saved.shiftAmount ?? DEFAULT_SHIFT_RATE),
+        monthlyTarget: Number(saved.monthlyTarget ?? DEFAULT_TARGET),
         autoSend: saved.autoSend === true,
-        email: saved.email || DEFAULT_EMAIL,
+        email: saved.email || DEFAULT_EMAIL
       };
     }
 
     function applySettings() {
       const settings = getSettings();
-      shiftAmountInput.value = settings.shiftAmount;
-      monthlyTargetInput.value = settings.monthlyTarget;
-      autoSendToggle.checked = settings.autoSend;
-      summaryEmailInput.value = settings.email;
+      elements.shiftAmount.value = settings.shiftAmount;
+      elements.monthlyTargetInput.value = settings.monthlyTarget;
+      elements.summaryEmail.value = settings.email;
+      elements.autoSendToggle.checked = settings.autoSend;
+      elements.accountLabel.textContent = settings.email || DEFAULT_EMAIL;
     }
 
-    function saveOptionsHandler() {
-      saveSettings({
-        shiftAmount: Number(shiftAmountInput.value) || SHIFT_AMOUNT,
-        monthlyTarget: Number(monthlyTargetInput.value) || MONTHLY_TARGET,
-        autoSend: autoSendToggle.checked,
-        email: summaryEmailInput.value || DEFAULT_EMAIL,
-      });
-      showToast('Advanced options saved');
-      renderRecords();
-    }
-
-    function resetOptionsHandler() {
-      saveSettings({
-        shiftAmount: SHIFT_AMOUNT,
-        monthlyTarget: MONTHLY_TARGET,
-        autoSend: false,
-        email: DEFAULT_EMAIL,
-      });
-      applySettings();
-      showToast('Advanced options reset');
-      renderRecords();
+    function generateId() {
+      return window.crypto?.randomUUID ? crypto.randomUUID() : `id-${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
     }
 
     function formatCurrency(value) {
-      return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR' }).format(value);
+      return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'EUR' }).format(Number(value || 0));
     }
 
     function getMonthKey(dateString) {
-      return dateString.slice(0, 7);
+      return String(dateString || '').slice(0, 7);
     }
 
     function formatMonthLabel(monthKey) {
+      if (!monthKey || !monthKey.includes('-')) return 'Current month';
       const [year, month] = monthKey.split('-');
-      const date = new Date(`${year}-${month}-01`);
+      const date = new Date(Number(year), Number(month) - 1, 1);
       return date.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
     }
 
@@ -648,195 +447,93 @@
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     }
 
-    function updateArchiveFilter(records) {
-      const currentMonthKey = getCurrentMonthKey();
-      const monthKeys = Array.from(new Set(records.map(record => getMonthKey(record.date))))
-        .filter(key => key !== currentMonthKey)
-        .sort((a, b) => b.localeCompare(a));
-      archiveMonthFilter.innerHTML = '<option value="">Choose month</option>' + monthKeys.map(key => `
-        <option value="${key}">${formatMonthLabel(key)}</option>
-      `).join('');
-      if (!monthKeys.includes(archiveMonthFilter.value)) {
-        archiveMonthFilter.value = '';
-      }
-    }
-
-    function renderMonthSummary(records) {
-      const settings = getSettings();
-      const currentMonthKey = getCurrentMonthKey();
-      const filtered = records.filter(record => getMonthKey(record.date) === currentMonthKey);
-
-      let morningCount = 0;
-      let nightCount = 0;
-      let total = 0;
-
-      filtered.forEach(record => {
-        if (record.shift === 'morning') morningCount++;
-        if (record.shift === 'night') nightCount++;
-        total += record.salary;
-      });
-
-      monthCountShifts.textContent = filtered.length;
-      monthCountMorning.textContent = morningCount;
-      monthCountNight.textContent = nightCount;
-      monthSalary.textContent = formatCurrency(total);
-      monthTarget.textContent = formatCurrency(settings.monthlyTarget);
-      const diff = Math.max(0, settings.monthlyTarget - total);
-      monthDifference.textContent = formatCurrency(diff);
-    }
-
-    function renderArchiveMonth(records) {
-      const selectedMonth = archiveMonthFilter.value;
-      if (!selectedMonth) {
-        archiveTableBody.innerHTML = '<tr><td colspan="5" style="color: var(--muted);">Select a past month to view archived shifts.</td></tr>';
-        archiveCountShifts.textContent = '0';
-        archiveCountMorning.textContent = '0';
-        archiveCountNight.textContent = '0';
-        archiveSalary.textContent = formatCurrency(0);
-        archiveTarget.textContent = formatCurrency(MONTHLY_TARGET);
-        archiveDifference.textContent = formatCurrency(MONTHLY_TARGET);
-        return;
-      }
-
-      const filtered = records.filter(record => getMonthKey(record.date) === selectedMonth);
-      archiveTableBody.innerHTML = '';
-      let morningCount = 0;
-      let nightCount = 0;
-      let total = 0;
-
-      filtered.forEach(record => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${record.date}</td>
-          <td>${record.shiftLabel}</td>
-          <td>${record.startTime}</td>
-          <td>${record.endTime}</td>
-          <td>${formatCurrency(record.salary)}</td>
-        `;
-        archiveTableBody.appendChild(row);
-
-        if (record.shift === 'morning') morningCount++;
-        if (record.shift === 'night') nightCount++;
-        total += record.salary;
-      });
-
-      const settings = getSettings();
-      archiveCountShifts.textContent = filtered.length;
-      archiveCountMorning.textContent = morningCount;
-      archiveCountNight.textContent = nightCount;
-      archiveSalary.textContent = formatCurrency(total);
-      archiveTarget.textContent = formatCurrency(settings.monthlyTarget);
-      const diff = Math.max(0, settings.monthlyTarget - total);
-      archiveDifference.textContent = formatCurrency(diff);
-    }
-
-    function showToast(text = 'Saved') {
-      const t = document.getElementById('toast');
-      const txt = document.getElementById('toastText');
-      txt.textContent = text;
-      t.classList.remove('hide');
-      setTimeout(() => t.classList.add('hide'), 2200);
-    }
-
-    function playClickTone() {
+    function loadRecords() {
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.type = 'sine';
-        oscillator.frequency.value = 520;
-        gainNode.gain.value = 0.08;
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.06);
-        oscillator.onended = () => audioCtx.close();
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return normalizeRecords(Array.isArray(parsed) ? parsed : []);
       } catch (error) {
-        // audio not supported
+        return [];
       }
     }
 
-    function feedbackOnAdd() {
-      if (navigator.vibrate) navigator.vibrate(30);
-      playClickTone();
+    function normalizeRecords(records) {
+      return records.map((record) => ({
+        id: record.id || generateId(),
+        date: record.date,
+        shift: record.shift,
+        shiftLabel: record.shiftLabel || (record.shift === 'morning' ? 'Morning' : 'Night'),
+        startTime: record.startTime || (record.shift === 'morning' ? '10:00' : '18:30'),
+        endTime: record.endTime || (record.shift === 'morning' ? '15:30' : '23:30'),
+        salary: Number(record.salary || getSettings().shiftAmount)
+      }));
     }
 
-    function updateRecord(recordId, updates) {
-      const records = loadRecords();
-      const index = records.findIndex(r => r.id === recordId);
-      if (index === -1) return;
-      records[index] = { ...records[index], ...updates };
-      saveRecords(records);
-      renderRecords();
-      showToast('Record updated');
+    function saveRecords(records) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      broadcastSync(records);
     }
 
-    function deleteRecord(recordId) {
-      const records = loadRecords();
-      const filtered = records.filter(r => r.id !== recordId);
-      saveRecords(filtered);
-      renderRecords();
-      showToast('Record deleted');
+    function renderSummary(records) {
+      const settings = getSettings();
+      const currentMonthKey = getCurrentMonthKey();
+      const monthRecords = records.filter((record) => getMonthKey(record.date) === currentMonthKey);
+
+      let morning = 0;
+      let night = 0;
+      let totalPay = 0;
+
+      monthRecords.forEach((record) => {
+        if (record.shift === 'morning') morning += 1;
+        if (record.shift === 'night') night += 1;
+        totalPay += Number(record.salary || 0);
+      });
+
+      elements.monthCountShifts.textContent = String(monthRecords.length);
+      elements.monthCountMorning.textContent = String(morning);
+      elements.monthCountNight.textContent = String(night);
+      elements.monthSalary.textContent = formatCurrency(totalPay);
+      elements.monthTarget.textContent = formatCurrency(settings.monthlyTarget);
+      elements.monthDifference.textContent = formatCurrency(Math.max(0, settings.monthlyTarget - totalPay));
+
+      const allCurrent = records.filter((record) => record.date && record.shift);
+      elements.countShifts.textContent = allCurrent.length;
+      elements.countMorning.textContent = allCurrent.filter((record) => record.shift === 'morning').length;
+      elements.countNight.textContent = allCurrent.filter((record) => record.shift === 'night').length;
+      elements.totalSalary.textContent = formatCurrency(allCurrent.reduce((sum, record) => sum + Number(record.salary || 0), 0));
     }
 
-    function promptEditRecord(recordId) {
-      const records = loadRecords();
-      const record = records.find(r => r.id === recordId);
-      if (!record) return;
+    function renderArchive(records) {
+      const monthKeys = Array.from(new Set(records.map((r) => getMonthKey(r.date)))).filter(Boolean).sort((a, b) => b.localeCompare(a));
+      const currentMonth = getCurrentMonthKey();
+      const pastMonths = monthKeys.filter((key) => key !== currentMonth);
+      elements.archiveMonthFilter.innerHTML = '<option value="">Past months</option>' + pastMonths.map((key) => `<option value="${key}">${formatMonthLabel(key)}</option>`).join('');
 
-      const dateValue = prompt('Edit date (YYYY-MM-DD):', record.date);
-      if (dateValue === null) return;
-      const shiftValue = prompt('Edit shift (morning/night):', record.shift);
-      if (shiftValue === null) return;
-      if (!['morning', 'night'].includes(shiftValue)) {
-        showToast('Shift must be morning or night');
+      const selected = elements.archiveMonthFilter.value;
+      if (!selected) return;
+
+      const selectedRecords = records.filter((record) => getMonthKey(record.date) === selected);
+      const total = selectedRecords.reduce((sum, record) => sum + Number(record.salary || 0), 0);
+
+      elements.monthCountShifts.textContent = String(selectedRecords.length);
+      elements.monthCountMorning.textContent = String(selectedRecords.filter((record) => record.shift === 'morning').length);
+      elements.monthCountNight.textContent = String(selectedRecords.filter((record) => record.shift === 'night').length);
+      elements.monthSalary.textContent = formatCurrency(total);
+      elements.monthTarget.textContent = formatCurrency(getSettings().monthlyTarget);
+      elements.monthDifference.textContent = formatCurrency(Math.max(0, getSettings().monthlyTarget - total));
+    }
+
+    function renderTable(records) {
+      elements.shiftTableBody.innerHTML = '';
+      const currentMonth = getCurrentMonthKey();
+      const filtered = records.filter((record) => getMonthKey(record.date) === currentMonth).sort((a, b) => a.date.localeCompare(b.date));
+
+      if (!filtered.length) {
+        elements.shiftTableBody.innerHTML = '<tr><td colspan="6" style="color: var(--muted); padding: 18px;">No shifts recorded for this month yet.</td></tr>';
         return;
       }
 
-      const settings = getSettings();
-      const updated = {
-        date: dateValue,
-        shift: shiftValue,
-        shiftLabel: shiftValue === 'morning' ? 'Morning' : 'Night',
-        startTime: shiftValue === 'morning' ? '10:00' : '18:30',
-        endTime: shiftValue === 'morning' ? '15:30' : '23:30',
-        salary: settings.shiftAmount,
-      };
-
-      updateRecord(recordId, updated);
-    }
-
-    function handleShiftTableClick(event) {
-      const button = event.target.closest('button');
-      if (!button) return;
-      const row = button.closest('tr');
-      if (!row) return;
-      const recordId = row.dataset.recordId;
-      if (!recordId) return;
-
-      if (button.classList.contains('edit-record')) {
-        promptEditRecord(recordId);
-      }
-      if (button.classList.contains('delete-record')) {
-        if (!confirm('Delete this shift record?')) return;
-        deleteRecord(recordId);
-      }
-    }
-
-    function renderRecords() {
-      const records = loadRecords();
-      shiftTableBody.innerHTML = '';
-      let morningCount = 0;
-      let nightCount = 0;
-      let total = 0;
-      const currentMonthKey = getCurrentMonthKey();
-
-      const currentRecords = records
-        .filter(record => getMonthKey(record.date) === currentMonthKey)
-        .sort((a, b) => a.date.localeCompare(b.date));
-
-      currentRecords.forEach(record => {
+      filtered.forEach((record) => {
         const row = document.createElement('tr');
         row.dataset.recordId = record.id;
         row.innerHTML = `
@@ -846,265 +543,303 @@
           <td>${record.endTime}</td>
           <td>${formatCurrency(record.salary)}</td>
           <td>
-            <button class="secondary edit-record" type="button">Edit</button>
-            <button class="secondary delete-record" type="button">Delete</button>
+            <div class="row-actions">
+              <button class="secondary edit-record" type="button">Edit</button>
+              <button class="secondary delete-record" type="button">Delete</button>
+            </div>
           </td>
         `;
-        shiftTableBody.appendChild(row);
-
-        if (record.shift === 'morning') morningCount++;
-        if (record.shift === 'night') nightCount++;
-        total += record.salary;
+        elements.shiftTableBody.appendChild(row);
       });
+    }
 
-      updateArchiveFilter(records);
-      renderMonthSummary(records);
-      renderArchiveMonth(records);
-      countShifts.textContent = currentRecords.length;
-      countMorning.textContent = morningCount;
-      countNight.textContent = nightCount;
-      totalSalary.textContent = formatCurrency(total);
+    function renderRecords() {
+      const records = loadRecords();
+      renderTable(records);
+      renderSummary(records);
+      renderArchive(records);
+    }
+
+    function showToast(text) {
+      elements.toastText.textContent = text;
+      elements.toast.classList.remove('hide');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => elements.toast.classList.add('hide'), 2200);
     }
 
     function createRecord(date, shift) {
       const settings = getSettings();
-      let shiftLabel = 'Night';
-      let startTime = '18:30';
-      let endTime = '23:30';
-      let salary = settings.shiftAmount;
-      const id = generateId();
-
-      if (shift === 'morning') {
-        shiftLabel = 'Morning';
-        startTime = '10:00';
-        endTime = '15:30';
-      }
-
+      const isMorning = shift === 'morning';
       return {
-        id,
+        id: generateId(),
         date,
         shift,
-        shiftLabel,
-        startTime,
-        endTime,
-        salary,
+        shiftLabel: isMorning ? 'Morning' : 'Night',
+        startTime: isMorning ? '10:00' : '18:30',
+        endTime: isMorning ? '15:30' : '23:30',
+        salary: Number(settings.shiftAmount)
       };
     }
 
-    function addShiftRecord() {
-      const dateValue = shiftDate.value;
-      const shiftValue = shiftType.value;
-
-      if (!dateValue) {
+    function confirmAdd() {
+      const date = elements.shiftDate.value;
+      const shift = elements.shiftType.value;
+      if (!date) {
         showToast('Please choose a date');
         return;
       }
 
       const records = loadRecords();
-      if (shiftValue === 'both') {
-        const morningRec = createRecord(dateValue, 'morning');
-        const nightRec = createRecord(dateValue, 'night');
-        records.push(morningRec, nightRec);
-        saveRecords(records);
-        renderRecords();
-        shiftDate.value = '';
-        shiftType.value = 'morning';
-        showToast('Morning + Night added');
-        feedbackOnAdd();
+      if (shift === 'both') {
+        records.push(createRecord(date, 'morning'), createRecord(date, 'night'));
       } else {
-        const rec = createRecord(dateValue, shiftValue);
-        records.push(rec);
-        saveRecords(records);
-        renderRecords();
-        shiftDate.value = '';
-        shiftType.value = 'morning';
-        showToast('Shift added');
-        feedbackOnAdd();
+        records.push(createRecord(date, shift));
       }
 
-      const settings = getSettings();
-      if (settings.autoSend && isLastDayOfMonth(new Date(dateValue))) {
-        sendEndOfMonthSummary();
-      }
-    }
-
-    function getCurrentMonthSummary(records) {
-      const currentMonthKey = getCurrentMonthKey();
-      const filtered = records.filter(record => getMonthKey(record.date) === currentMonthKey);
-
-      const summary = {
-        monthLabel: formatMonthLabel(currentMonthKey),
-        totalShifts: filtered.length,
-        morningShifts: filtered.filter(record => record.shift === 'morning').length,
-        nightShifts: filtered.filter(record => record.shift === 'night').length,
-        totalSalary: filtered.reduce((sum, record) => sum + record.salary, 0),
-        target: MONTHLY_TARGET,
-      };
-      summary.remaining = Math.max(0, summary.target - summary.totalSalary);
-      summary.records = filtered;
-      return summary;
-    }
-
-    function buildSummaryEmailBody(summary) {
-      const lines = [
-        `Shift tracker summary for ${summary.monthLabel}`,
-        '',
-        `Total shifts: ${summary.totalShifts}`,
-        `Morning shifts: ${summary.morningShifts}`,
-        `Night shifts: ${summary.nightShifts}`,
-        `Total salary: ${formatCurrency(summary.totalSalary)}`,
-        `Salary target: ${formatCurrency(summary.target)}`,
-        `Remaining to target: ${formatCurrency(summary.remaining)}`,
-        '',
-        'Recorded shifts:',
-      ];
-
-      if (summary.records.length) {
-        summary.records.forEach(record => {
-          lines.push(`- ${record.date}: ${record.shiftLabel} (${record.startTime} - ${record.endTime}) ${formatCurrency(record.salary)}`);
-        });
-      } else {
-        lines.push('No recorded shifts for this month.');
-      }
-
-      return lines.join('\n');
-    }
-
-    function isLastDayOfMonth(date = new Date()) {
-      const d = new Date(date);
-      const nextDay = new Date(d);
-      nextDay.setDate(d.getDate() + 1);
-      return nextDay.getDate() === 1;
-    }
-
-    function sendEndOfMonthSummary() {
-      const settings = getSettings();
-      const records = loadRecords();
-      const summary = getCurrentMonthSummary(records);
-      const subject = encodeURIComponent(`Shift tracker summary for ${summary.monthLabel}`);
-      const body = encodeURIComponent(buildSummaryEmailBody(summary));
-      window.location.href = `mailto:${encodeURIComponent(settings.email)}?subject=${subject}&body=${body}`;
-      showToast('End-of-month summary draft opened');
-    }
-
-    function generatePdfContent(records, settings) {
-      const summary = getCurrentMonthSummary(records);
-      const lines = [
-        `Shift tracker summary for ${summary.monthLabel}`,
-        '',
-        `Total shifts: ${summary.totalShifts}`,
-        `Morning shifts: ${summary.morningShifts}`,
-        `Night shifts: ${summary.nightShifts}`,
-        `Total salary: ${formatCurrency(summary.totalSalary)}`,
-        `Salary target: ${formatCurrency(settings.monthlyTarget)}`,
-        `Remaining to target: ${formatCurrency(Math.max(0, settings.monthlyTarget - summary.totalSalary))}`,
-        '',
-        'Recorded shifts:',
-      ];
-      if (summary.records.length) {
-        summary.records.forEach(record => {
-          lines.push(`- ${record.date}: ${record.shiftLabel} (${record.startTime} - ${record.endTime}) ${formatCurrency(record.salary)}`);
-        });
-      } else {
-        lines.push('No recorded shifts for this month.');
-      }
-      return lines;
-    }
-
-    function exportRecordsPdf() {
-      const settings = getSettings();
-      const records = loadRecords();
-      const lines = generatePdfContent(records, settings);
-
-      if (window.jspdf?.jsPDF) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        let y = 14;
-        doc.setFontSize(12);
-        lines.forEach(line => {
-          if (y > 280) {
-            doc.addPage();
-            y = 14;
-          }
-          doc.text(line, 14, y);
-          y += 8;
-        });
-        doc.save('shift-summary.pdf');
-      } else {
-        window.print();
-      }
-    }
-
-    function emailSummaryReport() {
-      const settings = getSettings();
-      const records = loadRecords();
-      const summary = getCurrentMonthSummary(records);
-      const emailAddress = prompt('Enter your email address to receive the monthly summary:', settings.email) || settings.email;
-
-      const subject = encodeURIComponent(`Shift tracker summary for ${summary.monthLabel}`);
-      const body = encodeURIComponent(buildSummaryEmailBody(summary));
-      window.location.href = `mailto:${encodeURIComponent(emailAddress)}?subject=${subject}&body=${body}`;
-      showToast('Email draft opened');
-    }
-
-    function clearRecords() {
-      if (!confirm('Clear all saved shift records?')) return;
-      localStorage.removeItem(STORAGE_KEY);
+      saveRecords(records);
       renderRecords();
+      elements.shiftDate.value = '';
+      elements.shiftType.value = 'morning';
+      elements.confirmBackdrop.style.display = 'none';
+      showToast(shift === 'both' ? 'Morning + night added' : 'Shift added');
+
+      const settings = getSettings();
+      if (settings.autoSend && isLastDayOfMonth(new Date(date))) {
+        sendSummaryMail();
+      }
     }
 
-    function downloadRecordsCsv() {
+    function deleteRecord(recordId) {
+      const records = loadRecords().filter((record) => record.id !== recordId);
+      saveRecords(records);
+      renderRecords();
+      showToast('Record deleted');
+    }
+
+    function updateRecord(recordId, updates) {
       const records = loadRecords();
-      if (!records.length) {
-        alert('No records to download. Add at least one shift first.');
+      const target = records.find((record) => record.id === recordId);
+      if (!target) return;
+      Object.assign(target, updates);
+      saveRecords(records);
+      renderRecords();
+      showToast('Record updated');
+    }
+
+    function editRecord(recordId) {
+      const records = loadRecords();
+      const record = records.find((item) => item.id === recordId);
+      if (!record) return;
+
+      const newDate = prompt('Edit date (YYYY-MM-DD):', record.date);
+      if (newDate === null) return;
+
+      const shiftInput = prompt('Edit shift (morning/night):', record.shift);
+      if (shiftInput === null) return;
+
+      const normalizedShift = shiftInput.toLowerCase();
+      if (!['morning', 'night'].includes(normalizedShift)) {
+        showToast('Choose morning or night');
         return;
       }
 
-      const headers = ['Date', 'Shift', 'Start', 'End', 'Salary'];
-      const rows = records.map(record => [record.date, record.shiftLabel, record.startTime, record.endTime, record.salary.toFixed(2)]);
-      const csv = [headers, ...rows]
-        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-        .join('\r\n');
+      updateRecord(recordId, {
+        date: newDate,
+        shift: normalizedShift,
+        shiftLabel: normalizedShift === 'morning' ? 'Morning' : 'Night',
+        startTime: normalizedShift === 'morning' ? '10:00' : '18:30',
+        endTime: normalizedShift === 'morning' ? '15:30' : '23:30',
+        salary: Number(getSettings().shiftAmount)
+      });
+    }
 
+    function handleTableClick(event) {
+      const button = event.target.closest('button');
+      if (!button) return;
+      const row = button.closest('tr');
+      if (!row) return;
+      const recordId = row.dataset.recordId;
+      if (!recordId) return;
+
+      if (button.classList.contains('delete-record')) {
+        if (confirm('Delete this shift record?')) deleteRecord(recordId);
+      }
+      if (button.classList.contains('edit-record')) editRecord(recordId);
+    }
+
+    function isLastDayOfMonth(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1).getDate() === 1;
+    }
+
+    function buildSummaryBody(records = loadRecords()) {
+      const settings = getSettings();
+      const currentMonth = getCurrentMonthKey();
+      const filtered = records.filter((record) => getMonthKey(record.date) === currentMonth);
+      const total = filtered.reduce((sum, record) => sum + Number(record.salary || 0), 0);
+      const morning = filtered.filter((record) => record.shift === 'morning').length;
+      const night = filtered.filter((record) => record.shift === 'night').length;
+      const remaining = Math.max(0, settings.monthlyTarget - total);
+
+      const lines = [
+        `Shift tracker summary for ${formatMonthLabel(currentMonth)}`,'',
+        `Total shifts: ${filtered.length}`,
+        `Morning shifts: ${morning}`,
+        `Night shifts: ${night}`,
+        `Total pay: ${formatCurrency(total)}`,
+        `Target: ${formatCurrency(settings.monthlyTarget)}`,
+        `Remaining: ${formatCurrency(remaining)}`,
+        '',
+        'Shift details:'
+      ];
+
+      if (!filtered.length) {
+        lines.push('No shifts recorded this month.');
+      } else {
+        filtered.forEach((record) => lines.push(`- ${record.date} | ${record.shiftLabel} | ${record.startTime} - ${record.endTime} | ${formatCurrency(record.salary)}`));
+      }
+      return lines.join('\n');
+    }
+
+    function sendSummaryMail() {
+      const settings = getSettings();
+      const records = loadRecords();
+      const subject = encodeURIComponent(`Shift tracker summary for ${formatMonthLabel(getCurrentMonthKey())}`);
+      const body = encodeURIComponent(buildSummaryBody(records));
+      const mailTo = settings.email || DEFAULT_EMAIL;
+      window.location.href = `mailto:${encodeURIComponent(mailTo)}?subject=${subject}&body=${body}`;
+      showToast('Summary mail draft opened');
+    }
+
+    function downloadCsvExport() {
+      const records = loadRecords();
+      if (!records.length) {
+        showToast('No data to export');
+        return;
+      }
+
+      const rows = [
+        ['Date', 'Shift', 'Start', 'End', 'Salary'],
+        ...records.map((record) => [record.date, record.shiftLabel, record.startTime, record.endTime, Number(record.salary || 0).toFixed(2)])
+      ];
+
+      const csv = rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\r\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = url;
-      link.download = 'shift-records.csv';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      link.href = url; link.download = 'shift-records.csv';
+      document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
+      showToast('CSV downloaded');
     }
 
-    // show confirmation modal before adding
-    addShift.addEventListener('click', (e) => {
-      e.preventDefault();
-      const backdrop = document.getElementById('confirmBackdrop');
-      backdrop.style.display = 'flex';
+    function saveOptionsHandler() {
+      const settings = {
+        shiftAmount: Number(elements.shiftAmount.value) || DEFAULT_SHIFT_RATE,
+        monthlyTarget: Number(elements.monthlyTargetInput.value) || DEFAULT_TARGET,
+        autoSend: elements.autoSendToggle.checked,
+        email: elements.summaryEmail.value || DEFAULT_EMAIL
+      };
+      saveSettings(settings);
+      applySettings();
+      renderRecords();
+      showToast('Settings saved');
+    }
+
+    function resetOptionsHandler() {
+      saveSettings({ shiftAmount: DEFAULT_SHIFT_RATE, monthlyTarget: DEFAULT_TARGET, autoSend: false, email: DEFAULT_EMAIL });
+      applySettings();
+      renderRecords();
+      showToast('Settings reset');
+    }
+
+    function broadcastSync(data) {
+      if (!('BroadcastChannel' in window)) return;
+      const channel = new BroadcastChannel(SYNC_CHANNEL);
+      channel.postMessage({ key: STORAGE_KEY, data, owner: getSettings().email || DEFAULT_EMAIL });
+      channel.close();
+    }
+
+    function listenForSync() {
+      if (!('BroadcastChannel' in window)) return;
+      const channel = new BroadcastChannel(SYNC_CHANNEL);
+      channel.addEventListener('message', (event) => {
+        const payload = event.data || {};
+        if (payload.key !== STORAGE_KEY) return;
+        if (payload.owner && payload.owner === getSettings().email) return;
+        try {
+          const incoming = normalizeRecords(Array.isArray(payload.data) ? payload.data : []);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
+          renderRecords();
+          showToast('Another device synced updates');
+        } catch (error) {}
+      });
+    }
+
+    function setupCrossTabSync() {
+      if (window.addEventListener) {
+        window.addEventListener('storage', (event) => {
+          if (event.key === STORAGE_KEY && event.newValue) {
+            renderRecords();
+            elements.syncLabel.textContent = 'Live sync active';
+          }
+        });
+      }
+      listenForSync();
+    }
+
+    function initGoogleAction() {
+      elements.googleSignin.addEventListener('click', () => {
+        const value = prompt('Connect Gmail account for this dashboard:', getSettings().email || DEFAULT_EMAIL);
+        if (!value) return;
+        const nextEmail = value.trim();
+        if (!nextEmail) return;
+        saveSettings({ ...getSettings(), email: nextEmail });
+        applySettings();
+        showToast('Gmail account connected');
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      elements.liveTime.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    elements.addShift.addEventListener('click', () => {
+      elements.confirmBackdrop.style.display = 'flex';
     });
-    const modalCancel = document.getElementById('modalCancel');
-    const modalConfirm = document.getElementById('modalConfirm');
-    modalCancel.addEventListener('click', () => {
-      document.getElementById('confirmBackdrop').style.display = 'none';
+    elements.modalCancel.addEventListener('click', () => {
+      elements.confirmBackdrop.style.display = 'none';
       showToast('Cancelled');
     });
-    modalConfirm.addEventListener('click', () => {
-      document.getElementById('confirmBackdrop').style.display = 'none';
-      addShiftRecord();
+    elements.modalConfirm.addEventListener('click', confirmAdd);
+    elements.emailSummary.addEventListener('click', sendSummaryMail);
+    elements.downloadCsv.addEventListener('click', downloadCsvExport);
+    elements.saveOptions.addEventListener('click', saveOptionsHandler);
+    elements.resetOptions.addEventListener('click', resetOptionsHandler);
+    elements.archiveMonthFilter.addEventListener('change', () => {
+      const selected = elements.archiveMonthFilter.value;
+      if (!selected) {
+        renderRecords();
+        return;
+      }
+      const records = loadRecords();
+      const selectedRecords = records.filter((record) => getMonthKey(record.date) === selected);
+      const total = selectedRecords.reduce((sum, record) => sum + Number(record.salary || 0), 0);
+      elements.monthCountShifts.textContent = String(selectedRecords.length);
+      elements.monthCountMorning.textContent = String(selectedRecords.filter((record) => record.shift === 'morning').length);
+      elements.monthCountNight.textContent = String(selectedRecords.filter((record) => record.shift === 'night').length);
+      elements.monthSalary.textContent = formatCurrency(total);
+      elements.monthTarget.textContent = formatCurrency(getSettings().monthlyTarget);
+      elements.monthDifference.textContent = formatCurrency(Math.max(0, getSettings().monthlyTarget - total));
     });
-    clearAll.addEventListener('click', clearRecords);
-    downloadCsv.addEventListener('click', downloadRecordsCsv);
-    exportPdf.addEventListener('click', exportRecordsPdf);
-    shiftTableBody.addEventListener('click', handleShiftTableClick);
-    emailSummary.addEventListener('click', emailSummaryReport);
-    saveOptions.addEventListener('click', saveOptionsHandler);
-    resetOptions.addEventListener('click', resetOptionsHandler);
-    archiveMonthFilter.addEventListener('change', () => {
-      renderArchiveMonth(loadRecords());
-    });
+    elements.shiftTableBody.addEventListener('click', handleTableClick);
+
     applySettings();
+    updateClock();
+    setInterval(updateClock, 60000);
+    setupCrossTabSync();
+    initGoogleAction();
     renderRecords();
+    showToast('Dashboard loaded');
   </script>
 </body>
 </html>
